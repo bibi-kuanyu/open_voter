@@ -1,0 +1,7 @@
+/* Basic styling for Open Voter */
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
