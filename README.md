@@ -55,6 +55,16 @@ open_voter 是一個專注於台灣選舉的政見履約追蹤與查詢平台。
     *   未當選
     *(所有候選人資訊與政見均可納入追蹤，無論當選與否，以體現全面的政治參與評估)*
 
+## 網站架構與初步規劃
+
+*   **入口頁面(Election Year Selector):**
+    *   提供使用者選擇欲查詢的選舉年份（例如：2024、2026）。
+    *   導向至對應年份的選舉資訊頁面。
+*   **選舉資訊頁面(ElectionDetails):**
+    *   根據使用者選擇的年份，顯示該次選舉的候選人列表與政見摘要。
+*   **政見追蹤頁面(PledgeTracker):**
+    *   顯示單一候選人的詳細政見與履約狀態。
+
 ---
 
 *This README.md was automatically generated and updated. Please review and refine as needed.*
