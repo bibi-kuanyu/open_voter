@@ -7,7 +7,27 @@
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <div id="root"></div>
+    <header>
+        <h1>台灣選舉政見履約追蹤平台</h1>
+        <nav>
+            <label for="election-year">選擇選舉年份：</label>
+            <select id="election-year">
+                <option value="2026">2026 九合一選舉</option>
+                <option value="2024">2024 總統/立委選舉</option>
+                <!-- Other election years can be added here -->
+            </select>
+        </nav>
+    </header>
+    
+    <main id="content-area">
+        <!-- Content for selected election year will be loaded here -->
+        <p>請選擇上方的選舉年份以開始查詢。</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Open Voter Project. All rights reserved.</p>
+    </footer>
+
     <script src="src/main.js"></script>
 </body>
 </html>
