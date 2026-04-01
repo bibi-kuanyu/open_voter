@@ -1,7 +1,10 @@
 /* Basic styling for Open Voter */
-body {
-    font-family: sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-}
+body { font-family: sans-serif; }
+header { background: #2c3e50; color: #fff; padding: 16px; }
+header h1 { margin: 0 0 8px; font-size: 20px; }
+nav { display: flex; gap: 12px; align-items: center; }
+main { padding: 20px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 12px; }
+footer { text-align: center; padding: 12px; font-size: 12px; color: #666; }
+"} to=functions.exec  בדיjson大香线蕉 to=functions.exec code? outineಂಟ がお送りします to=functions.exec  code to=functions.exec  not valid to=functions.exec  code  [
