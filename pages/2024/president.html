@@ -1,1 +1,193 @@
-<h2>Presidential Election</h2><p>Loading candidate data...</p>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024 總統候選人 - Open Voter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f9fafb;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(26, 86, 219, 0.15);
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
+                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
+                    </div>
+                </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
+                <a href="/pages/2024.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2024 選舉</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <nav class="flex items-center gap-2 text-sm">
+                <a href="/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <a href="/pages/2024.html" class="text-gray-500 hover:text-blue-600 transition-colors">2024</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="text-gray-900 font-medium">總統候選人</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">2024 總統候選人</h2>
+                <p class="text-lg text-gray-500">第十四任總統、副總統選舉</p>
+            </div>
+
+            <!-- Candidates Container -->
+            <div id="candidates-container" class="grid md:grid-cols-3 gap-6">
+                <!-- Loading State -->
+                <div class="col-span-full text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="mt-4 text-gray-500">載入候選人資料中...</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/pages/2024.html" class="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>返回 2024 選舉</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-white">Open Voter</span>
+                </div>
+                <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const partyColors = {
+            '民主進步黨': { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-500' },
+            '中國國民黨': { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-500' },
+            '台灣民眾黨': { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-500' }
+        };
+
+        const statusIcons = {
+            '已完成': '✅',
+            '進行中': '🔵',
+            '待追蹤': '⚪',
+            '未達成': '❌'
+        };
+
+        async function loadCandidates() {
+            try {
+                const response = await fetch('/data/candidates.json');
+                const data = await response.json();
+                const candidates = data['2024']['總統大選']['候選人'];
+                const container = document.getElementById('candidates-container');
+                
+                container.innerHTML = candidates.map(candidate => {
+                    const partyInfo = partyColors[candidate['黨籍']] || { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-500' };
+                    const displayPolicies = candidate['政見'].slice(0, 4);
+                    
+                    return `
+                        <div class="card-hover bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="p-6">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-16 h-16 rounded-full ${partyInfo.bg} flex items-center justify-center">
+                                        <span class="${partyInfo.text} text-2xl font-bold">${candidate['姓名'][0]}</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-900">${candidate['姓名']}</h3>
+                                        <p class="text-sm ${partyInfo.text}">${candidate['黨籍']}</p>
+                                        <p class="text-xs text-gray-500">副手：${candidate['副手']}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-gray-100 pt-4">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-3">政見</h4>
+                                    <ul class="space-y-2">
+                                        ${displayPolicies.map(policy => `
+                                            <li class="flex items-start gap-2 text-sm">
+                                                <span class="text-lg">${statusIcons[policy['KPI狀態']] || '⚪'}</span>
+                                                <div>
+                                                    <p class="text-gray-800">${policy['標題']}</p>
+                                                    <p class="text-xs text-gray-400">${policy['說明']}</p>
+                                                </div>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="mt-4 pt-4 border-t border-gray-100">
+                                    <a href="/pages/2024/president_${candidate['姓名']}.html" class="inline-flex items-center gap-2 w-full justify-center px-4 py-2 ${partyInfo.bg} ${partyInfo.text} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">
+                                        <span>查看完整政見</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading candidates:', error);
+                document.getElementById('candidates-container').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        <p>載入候選人資料失敗，請稍後再試。</p>
+                    </div>
+                `;
+            }
+        }
+
+        loadCandidates();
+    </script>
+</body>
+</html>
