@@ -1,1 +1,233 @@
-<h2>Party-list Legislators</h2><p>Loading candidate data...</p>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不分區立法委員 - 2024 選舉 - Open Voter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f9fafb;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/open_voter/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
+                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
+                    </div>
+                </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="/open_voter/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
+                <a href="/open_voter/pages/2024.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2024 選舉</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <nav class="flex items-center gap-2 text-sm">
+                <a href="/open_voter/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <a href="/open_voter/pages/2024.html" class="text-gray-500 hover:text-blue-600 transition-colors">2024</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="text-gray-900 font-medium">不分區立法委員</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">不分區立法委員</h2>
+                <p class="text-lg text-gray-500">第十一屆立法委員選舉 - 各政黨不分區名單</p>
+            </div>
+
+            <!-- Parties Container -->
+            <div id="parties-container" class="space-y-8">
+                <!-- Loading State -->
+                <div class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="mt-4 text-gray-500">載入政黨資料中...</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/open_voter/pages/2024.html" class="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>返回 2024 選舉</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-white">Open Voter</span>
+                </div>
+                <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const partyData = {
+            '民主進步黨': {
+                color: 'green',
+                bg: 'bg-green-50',
+                border: 'border-green-500',
+                text: 'text-green-700',
+                seatCount: 13,
+                candidates: [
+                    { 姓名: '莊瑞雄', 政見: '推動社會福利政策', 狀態: '當選' },
+                    { 姓名: '羅美玲', 政見: '關注婦女與兒童權益', 狀態: '當選' },
+                    { 姓名: '江永昌', 政見: '金融科技與創新', 狀態: '當選' },
+                    { 姓名: '吳玉琴', 政見: '長照與健康政策', 狀態: '當選' },
+                    { 姓名: '莊思敏', 政見: '青年參與與教育', 狀態: '當選' }
+                ]
+            },
+            '中國國民黨': {
+                color: 'blue',
+                bg: 'bg-blue-50',
+                border: 'border-blue-500',
+                text: 'text-blue-700',
+                seatCount: 14,
+                candidates: [
+                    { 姓名: '柯志恩', 政見: '教育與青年發展', 狀態: '當選' },
+                    { 姓名: '蘇清泉', 政見: '醫療與健康政策', 狀態: '當選' },
+                    { 姓名: '張嘉郡', 政見: '農業與在地產業', 狀態: '當選' },
+                    { 姓名: '王育敏', 政見: '兒童與家庭福利', 狀態: '當選' },
+                    { 姓名: '謝衣鳯', 政見: '客家文化傳承', 狀態: '當選' }
+                ]
+            },
+            '台灣民眾黨': {
+                color: 'orange',
+                bg: 'bg-orange-50',
+                border: 'border-orange-500',
+                text: 'text-orange-700',
+                seatCount: 8,
+                candidates: [
+                    { 姓名: '黃國昌', 政見: '司法改革與監督', 狀態: '當選' },
+                    { 姓名: '吳欣盈', 政見: '金融與國際貿易', 狀態: '當選' },
+                    { 姓名: '張其祿', 政見: '政府效能改革', 狀態: '當選' },
+                    { 姓名: '邱臣遠', 政見: '數位科技發展', 狀態: '當選' },
+                    { 姓名: '陳琬惠', 政見: '公共設施與交通', 狀態: '當選' }
+                ]
+            },
+            '時代力量': {
+                color: 'yellow',
+                bg: 'bg-yellow-50',
+                border: 'border-yellow-500',
+                text: 'text-yellow-700',
+                seatCount: 3,
+                candidates: [
+                    { 姓名: '王婉諭', 政見: '兒少福利與保護', 狀態: '當選' },
+                    { 姓名: '陳椒華', 政見: '環境與永續發展', 狀態: '當選' },
+                    { 姓名: '邱顯智', 政見: '勞動與公平正義', 狀態: '當選' }
+                ]
+            },
+            '台灣基進': {
+                color: 'red',
+                bg: 'bg-red-50',
+                border: 'border-red-500',
+                text: 'text-red-700',
+                seatCount: 1,
+                candidates: [
+                    { 姓名: '陳柏惟', 政見: '台灣主權與安全', 狀態: '當選' }
+                ]
+            }
+        };
+
+        function renderParties() {
+            const container = document.getElementById('parties-container');
+            
+            const partyOrder = ['民主進步黨', '中國國民黨', '台灣民眾黨', '時代力量', '台灣基進'];
+            
+            container.innerHTML = partyOrder.map(partyName => {
+                const party = partyData[partyName];
+                const colorMap = {
+                    'green': { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-500' },
+                    'blue': { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-500' },
+                    'orange': { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-500' },
+                    'yellow': { bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-500' },
+                    'red': { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-500' }
+                };
+                const colors = colorMap[party.color];
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="border-l-4 ${colors.border} p-6">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full ${colors.bg} flex items-center justify-center">
+                                        <span class="${colors.text} text-xl font-bold">${partyName[0]}</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold ${colors.text}">${partyName}</h3>
+                                        <p class="text-sm text-gray-500">不分區席次</p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 md:mt-0">
+                                    <span class="inline-block ${colors.bg} ${colors.text} px-4 py-2 rounded-lg text-lg font-bold">
+                                        ${party.seatCount} 席
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${party.candidates.map(candidate => `
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <div class="flex items-center justify-between">
+                                            <h4 class="font-semibold text-gray-900">${candidate.姓名}</h4>
+                                            <span class="text-xs ${candidate.狀態 === '當選' ? 'text-green-600' : 'text-gray-500'}">
+                                                ${candidate.狀態}
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-500 mt-1">${candidate.政見}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        renderParties();
+    </script>
+</body>
+</html>

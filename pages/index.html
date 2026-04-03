@@ -16,6 +16,16 @@
         .hero-gradient {
             background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%);
         }
+        .countdown-gradient {
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
@@ -56,41 +66,136 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex-1 py-16 md:py-24">
-        <div class="max-w-2xl mx-auto px-4 text-center">
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-4xl mx-auto px-4">
             <!-- Coming Soon Badge -->
-            <div class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-8">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="font-medium">籌備中</span>
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-medium">籌備中</span>
+                </div>
             </div>
 
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">2026 地方選舉</h2>
-            <p class="text-lg text-gray-500 mb-8">地方自治層級選舉</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">2026 地方選舉</h2>
+            <p class="text-lg text-gray-500 text-center mb-12">地方自治層級選舉</p>
 
-            <!-- Info Box -->
+            <!-- Countdown Timer -->
             <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-                <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                    </svg>
+                <h3 class="text-xl font-bold text-gray-900 text-center mb-6">距離投票日</h3>
+                <div id="countdown" class="countdown-gradient rounded-xl p-6 text-white text-center">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <span id="days" class="text-3xl md:text-5xl font-bold block">--</span>
+                            <span class="text-sm opacity-80">天</span>
+                        </div>
+                        <div>
+                            <span id="hours" class="text-3xl md:text-5xl font-bold block">--</span>
+                            <span class="text-sm opacity-80">時</span>
+                        </div>
+                        <div>
+                            <span id="minutes" class="text-3xl md:text-5xl font-bold block">--</span>
+                            <span class="text-sm opacity-80">分</span>
+                        </div>
+                        <div>
+                            <span id="seconds" class="text-3xl md:text-5xl font-bold block">--</span>
+                            <span class="text-sm opacity-80">秒</span>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm opacity-80">2026 年 11 月 28 日</p>
                 </div>
-                <p class="text-xl text-gray-800 font-medium mb-4">
-                    2026 年地方選舉資料籌備中，敬請期待！
-                </p>
-                <p class="text-gray-500 leading-relaxed">
-                    將包含縣市長、縣市議會、鄉鎮市等地方公職候選人資訊及政見。
-                </p>
+            </div>
+
+            <!-- Election Types -->
+            <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">選舉類型說明</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">縣山市長</h4>
+                            <p class="text-sm text-gray-600">直轄市及縣（市）首長選舉，負責地方行政事務</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">縣市議會</h4>
+                            <p class="text-sm text-gray-600">地方立法機關，監督地方預算與施政</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4 p-4 bg-orange-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">鄉鎮市區民代表</h4>
+                            <p class="text-sm text-gray-600">基層民意代表，反映地方居民需求</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reminder Feature -->
+            <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">提醒功能</h3>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">訂閱候選人政見更新</h4>
+                        <p class="text-sm text-gray-600 mt-1">
+                            未來將提供電子郵件訂閱服務，當候選人政見有進度更新時主動通知您。
+                        </p>
+                        <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                            <input type="email" placeholder="輸入您的電子郵件" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                訂閱
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Note -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+                <div class="flex items-start gap-3">
+                    <svg class="w-6 h-6 text-yellow-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm text-yellow-800">
+                            <strong>資料籌備中：</strong>目前顯示之候選人資料均為 Placeholder，未來將整合中選會及相關單位之公開資料。
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <!-- Back Button -->
-            <a href="/open_voter/" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                <span>返回首頁</span>
-            </a>
+            <div class="text-center">
+                <a href="/open_voter/" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>返回首頁</span>
+                </a>
+            </div>
         </div>
     </main>
 
@@ -110,5 +215,34 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function updateCountdown() {
+            const votingDate = new Date('2026-11-28');
+            const now = new Date();
+            const diff = votingDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '0';
+                document.getElementById('minutes').textContent = '0';
+                document.getElementById('seconds').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
