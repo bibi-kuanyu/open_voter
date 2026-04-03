@@ -90,4 +90,42 @@ open_voter 是一個專注於台灣選舉的政見履約追蹤與查詢平台。
 
 ---
 
+## 🔧 GitHub Pages 部署注意事項
+
+### 問題：404 連結錯誤
+
+**原因：** GitHub Pages 部署在 repository 子目徑下，URL 結構為：
+```
+https://[username].github.io/open_voter/...
+```
+
+若 HTML 中使用 `href="/pages/2024.html"`，瀏覽器會解析為：
+```
+https://[username].github.io/pages/2024.html  ❌ 404
+```
+
+正確應為：
+```
+https://[username].github.io/open_voter/pages/2024.html  ✅
+```
+
+### 解法
+
+**所有路徑前綴必須加上 `/open_voter/`**
+
+| 錯誤写法 | 正確寫法 |
+|---------|----------|
+| `href="/"` | `href="/open_voter/"` |
+| `href="/pages/2024.html"` | `href="/open_voter/pages/2024.html"` |
+| `href="/#years"` | `href="/open_voter/#years"` |
+
+### 未來避免方式
+
+1. **固定前綴**：專案內所有 HTML 連結統一使用 `/open_voter/` 前綴
+2. **本地測試**：使用 `python3 -m http.server 8080` 在本機測試，確認路徑正確
+3. **部署前檢查**：上傳前確認所有 `href` 和 `src` 屬性
+4. **或使用相對路徑**：在同目錄下可使用 `href="pages/2024.html"`（不用開頭的 `/`）
+
+---
+
 *This README.md was automatically generated and updated. Please review and refine as needed.*
