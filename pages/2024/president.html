@@ -127,7 +127,7 @@
 
         async function loadCandidates() {
             try {
-                const response = await fetch('/data/candidates.json');
+                const response = await fetch('/open_voter/data/candidates.json');
                 const data = await response.json();
                 const candidates = data['2024']['總統大選']['候選人'];
                 const container = document.getElementById('candidates-container');
@@ -135,6 +135,12 @@
                 container.innerHTML = candidates.map(candidate => {
                     const partyInfo = partyColors[candidate['黨籍']] || { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-500' };
                     const displayPolicies = candidate['政見'].slice(0, 4);
+                    
+                    const policyCount = candidate['政見'].length;
+                    const completedCount = candidate['政見'].filter(p => p['KPI狀態'] === '已完成').length;
+                    const progress = Math.round((completedCount / policyCount) * 100);
+                    
+                    const progressColor = progress === 100 ? 'bg-green-500' : progress >= 50 ? 'bg-blue-500' : progress > 0 ? 'bg-yellow-500' : 'bg-red-500';
                     
                     return `
                         <div class="card-hover bg-white rounded-xl shadow-md overflow-hidden">
@@ -165,6 +171,16 @@
                                     </ul>
                                 </div>
                                 
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>政見達成率</span>
+                                        <span>${completedCount}/${policyCount} 已完成</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="${progressColor} h-2.5 rounded-full" style="width: ${progress}%"></div>
+                                    </div>
+                                </div>
+                                
                                 <div class="mt-4 pt-4 border-t border-gray-100">
                                     <a href="/open_voter/pages/2024/president_${candidate['姓名']}.html" class="inline-flex items-center gap-2 w-full justify-center px-4 py-2 ${partyInfo.bg} ${partyInfo.text} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">
                                         <span>查看完整政見</span>
@@ -181,7 +197,7 @@
                 console.error('Error loading candidates:', error);
                 document.getElementById('candidates-container').innerHTML = `
                     <div class="col-span-full text-center py-12 text-gray-500">
-                        <p>載入候選人資料失敗，請稍後再試。</p>
+                        <p>載入候選人資料失敗， 請稍後再試。</p>
                     </div>
                 `;
             }
