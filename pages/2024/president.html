@@ -112,6 +112,12 @@
     </footer>
 
     <script>
+        const nameToFile = {
+            '賴清德': 'president_lai.html',
+            '侯友宜': 'president_hou.html',
+            '柯文哲': 'president_ko.html'
+        };
+
         const partyColors = {
             '民主進步黨': { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-500' },
             '中國國民黨': { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-500' },
@@ -122,7 +128,16 @@
             '已完成': '✅',
             '進行中': '🔵',
             '待追蹤': '⚪',
-            '未達成': '❌'
+            '未達成': '❌',
+            '政黨延續': '🔄'
+        };
+
+        const statusLabels = {
+            '已完成': '已完成',
+            '進行中': '進行中',
+            '待追蹤': '待追蹤',
+            '未達成': '未達成',
+            '政黨延續': '政黨延續'
         };
 
         async function loadCandidates() {
@@ -135,10 +150,15 @@
                 container.innerHTML = candidates.map(candidate => {
                     const partyInfo = partyColors[candidate['黨籍']] || { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-500' };
                     const displayPolicies = candidate['政見'].slice(0, 4);
+                    const winner = data['2024']['總統大選']['當選人'];
+                    const isWinner = candidate['姓名'] === winner;
                     
                     const policyCount = candidate['政見'].length;
                     const completedCount = candidate['政見'].filter(p => p['KPI狀態'] === '已完成').length;
-                    const progress = Math.round((completedCount / policyCount) * 100);
+                    const continuedCount = candidate['政見'].filter(p => p['延續追蹤'] === '延續政見').length;
+                    
+                    const effectiveCompleted = isWinner ? completedCount : (completedCount + continuedCount);
+                    const progress = Math.round((effectiveCompleted / policyCount) * 100);
                     
                     const progressColor = progress === 100 ? 'bg-green-500' : progress >= 50 ? 'bg-blue-500' : progress > 0 ? 'bg-yellow-500' : 'bg-red-500';
                     
@@ -159,22 +179,25 @@
                                 <div class="border-t border-gray-100 pt-4">
                                     <h4 class="text-sm font-medium text-gray-700 mb-3">政見</h4>
                                     <ul class="space-y-2">
-                                        ${displayPolicies.map(policy => `
+                                        ${displayPolicies.map(policy => {
+                                            const status = policy['延續追蹤'] === '延續政見' && !isWinner ? '政黨延續' : policy['KPI狀態'];
+                                            return `
                                             <li class="flex items-start gap-2 text-sm">
-                                                <span class="text-lg">${statusIcons[policy['KPI狀態']] || '⚪'}</span>
+                                                <span class="text-lg">${statusIcons[status] || '⚪'}</span>
                                                 <div>
                                                     <p class="text-gray-800">${policy['標題']}</p>
                                                     <p class="text-xs text-gray-400">${policy['說明']}</p>
+                                                    ${policy['政見來源'] ? `<span class="text-xs text-gray-500">(${policy['政見來源']})</span>` : ''}
                                                 </div>
                                             </li>
-                                        `).join('')}
+                                        `}).join('')}
                                     </ul>
                                 </div>
                                 
                                 <div class="mt-4">
                                     <div class="flex justify-between text-sm mb-1">
-                                        <span>政見達成率</span>
-                                        <span>${completedCount}/${policyCount} 已完成</span>
+                                        <span>${isWinner ? '政見達成率' : '政見落實率'}</span>
+                                        <span>${isWinner ? `${completedCount}/${policyCount} 已完成` : `${effectiveCompleted}/${policyCount} (${completedCount} 完成 + ${continuedCount} 延續)`}</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-2.5">
                                         <div class="${progressColor} h-2.5 rounded-full" style="width: ${progress}%"></div>
@@ -182,7 +205,7 @@
                                 </div>
                                 
                                 <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <a href="/open_voter/pages/2024/president_${candidate['姓名']}.html" class="inline-flex items-center gap-2 w-full justify-center px-4 py-2 ${partyInfo.bg} ${partyInfo.text} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">
+                                    <a href="/open_voter/pages/2024/${nameToFile[candidate['姓名']]}" class="inline-flex items-center gap-2 w-full justify-center px-4 py-2 ${partyInfo.bg} ${partyInfo.text} rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">
                                         <span>查看完整政見</span>
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

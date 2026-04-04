@@ -23,6 +23,7 @@
         .status-in-progress { background-color: #dbeafe; color: #1e40af; }
         .status-pending { background-color: #f3f4f6; color: #374151; }
         .status-failed { background-color: #fee2e2; color: #991b1b; }
+        .status-party-continued { background-color: #dbeafe; color: #1e40af; }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
@@ -139,7 +140,8 @@
             '已完成': { text: '已完成', class: 'status-completed', icon: '✅' },
             '進行中': { text: '進行中', class: 'status-in-progress', icon: '🔵' },
             '待追蹤': { text: '待追蹤', class: 'status-pending', icon: '⚪' },
-            '未達成': { text: '未達成', class: 'status-failed', icon: '❌' }
+            '未達成': { text: '未達成', class: 'status-failed', icon: '❌' },
+            '政黨延續': { text: '政黨延續', class: 'status-party-continued', icon: '🔄' }
         };
 
         async function loadPolicies() {
@@ -147,7 +149,9 @@
                 const response = await fetch('/open_voter/data/candidates.json');
                 const data = await response.json();
                 const candidate = data['2024']['總統大選']['候選人'].find(c => c['姓名'] === '柯文哲');
+                const winner = data['2024']['總統大選']['當選人'];
                 const container = document.getElementById('policies-container');
+                const isWinner = candidate['姓名'] === winner;
                 
                 if (!candidate) {
                     container.innerHTML = '<p class="text-gray-500">找不到候選人資料</p>';
@@ -156,15 +160,18 @@
 
                 const policyCount = candidate['政見'].length;
                 const completedCount = candidate['政見'].filter(p => p['KPI狀態'] === '已完成').length;
-                const progress = Math.round((completedCount / policyCount) * 100);
+                const continuedCount = candidate['政見'].filter(p => p['延續追蹤'] === '延續政見').length;
+                
+                const effectiveCompleted = isWinner ? completedCount : (completedCount + continuedCount);
+                const progress = Math.round((effectiveCompleted / policyCount) * 100);
                 
                 const progressColor = progress === 100 ? 'bg-green-500' : progress >= 50 ? 'bg-blue-500' : progress > 0 ? 'bg-yellow-500' : 'bg-red-500';
                 
                 document.getElementById('policies-progress').innerHTML = `
                     <div class="bg-gray-50 rounded-lg p-4">
                         <div class="flex justify-between text-sm mb-2">
-                            <span class="font-medium text-gray-700">政見達成率</span>
-                            <span class="text-gray-600">${completedCount}/${policyCount} 已完成</span>
+                            <span class="font-medium text-gray-700">${isWinner ? '政見達成率' : '政見落實率'}</span>
+                            <span class="text-gray-600">${isWinner ? `${completedCount}/${policyCount} 已完成` : `${effectiveCompleted}/${policyCount} (${completedCount} 完成 + ${continuedCount} 延續)`}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
                             <div class="${progressColor} h-3 rounded-full" style="width: ${progress}%"></div>
@@ -173,21 +180,24 @@
                 `;
                 
                 container.innerHTML = candidate['政見'].map(policy => {
-                    const status = statusLabels[policy['KPI狀態']] || statusLabels['待追蹤'];
+                    const status = policy['延續追蹤'] === '延續政見' && !isWinner 
+                        ? statusLabels['政黨延續'] 
+                        : (statusLabels[policy['KPI狀態']] || statusLabels['待追蹤']);
                     return `
                         <div class="border border-gray-200 rounded-lg p-6">
                             <div class="flex items-start justify-between mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
-                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class}">
-                                    <span>${status.icon}</span>
-                                    <span>${status.text}</span>
-                                </span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class}">
+                                        <span>${status.icon}</span>
+                                        <span>${status.text}</span>
+                                    </span>
+                                </div>
                             </div>
-                            <p class="text-gray-600 mb-4">${policy['說明']}</p>
-                            <div class="flex flex-wrap gap-2">
-                                <a href="#" class="text-sm text-blue-600 hover:underline">新聞來源</a>
-                                <span class="text-gray-300">|</span>
-                                <a href="#" class="text-sm text-blue-600 hover:underline">官方網站</a>
+                            <p class="text-gray-600 mb-2">${policy['說明']}</p>
+                            <div class="flex flex-wrap gap-2 text-sm text-gray-500">
+                                ${policy['政見來源'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['政見來源']}</span>` : ''}
+                                ${policy['延續追蹤'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['延續追蹤']}</span>` : ''}
                             </div>
                         </div>
                     `;

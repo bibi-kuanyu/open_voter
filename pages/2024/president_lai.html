@@ -23,6 +23,7 @@
         .status-in-progress { background-color: #dbeafe; color: #1e40af; }
         .status-pending { background-color: #f3f4f6; color: #374151; }
         .status-failed { background-color: #fee2e2; color: #991b1b; }
+        .status-party-continued { background-color: #dbeafe; color: #1e40af; }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
@@ -139,7 +140,8 @@
             '已完成': { text: '已完成', class: 'status-completed', icon: '✅' },
             '進行中': { text: '進行中', class: 'status-in-progress', icon: '🔵' },
             '待追蹤': { text: '待追蹤', class: 'status-pending', icon: '⚪' },
-            '未達成': { text: '未達成', class: 'status-failed', icon: '❌' }
+            '未達成': { text: '未達成', class: 'status-failed', icon: '❌' },
+            '政黨延續': { text: '政黨延續', class: 'status-in-progress', icon: '🔄' }
         };
 
         async function loadPolicies() {
@@ -177,17 +179,18 @@
                     return `
                         <div class="border border-gray-200 rounded-lg p-6">
                             <div class="flex items-start justify-between mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
-                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class}">
-                                    <span>${status.icon}</span>
-                                    <span>${status.text}</span>
-                                </span>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class}">
+                                        <span>${status.icon}</span>
+                                        <span>${status.text}</span>
+                                    </span>
+                                </div>
                             </div>
-                            <p class="text-gray-600 mb-4">${policy['說明']}</p>
-                            <div class="flex flex-wrap gap-2">
-                                <a href="#" class="text-sm text-blue-600 hover:underline">新聞來源</a>
-                                <span class="text-gray-300">|</span>
-                                <a href="#" class="text-sm text-blue-600 hover:underline">官方網站</a>
+                            <p class="text-gray-600 mb-2">${policy['說明']}</p>
+                            <div class="flex flex-wrap gap-2 text-sm text-gray-500">
+                                ${policy['政見來源'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['政見來源']}</span>` : ''}
+                                ${policy['延續追蹤'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['延續追蹤']}</span>` : ''}
                             </div>
                         </div>
                     `;
