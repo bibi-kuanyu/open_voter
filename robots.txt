@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bibi-kuanyu.github.io/open_voter/sitemap.xml
