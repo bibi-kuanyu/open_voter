@@ -144,6 +144,24 @@
             '政黨延續': { text: '政黨延續', class: 'status-party-continued', icon: '🔄' }
         };
 
+        const evidenceIcons = {
+            '新聞': '📰',
+            '官方': '📄',
+            '事實查核': '🔍'
+        };
+
+        function toggleEvidence(btn) {
+            const list = btn.nextElementSibling;
+            const isHidden = list.classList.contains('hidden');
+            if (isHidden) {
+                list.classList.remove('hidden');
+                btn.innerHTML = btn.innerHTML.replace('📎 查看佐證', '📎 隱藏佐證');
+            } else {
+                list.classList.add('hidden');
+                btn.innerHTML = btn.innerHTML.replace('📎 隱藏佐證', '📎 查看佐證');
+            }
+        }
+
         async function loadPolicies() {
             try {
                 const response = await fetch('/open_voter/data/candidates.json');
@@ -183,6 +201,8 @@
                     const status = policy['延續追蹤'] === '延續政見' && !isWinner 
                         ? statusLabels['政黨延續'] 
                         : (statusLabels[policy['KPI狀態']] || statusLabels['待追蹤']);
+                    const evidence = policy['佐證'] || [];
+                    const evidenceCount = evidence.length;
                     return `
                         <div class="border border-gray-200 rounded-lg p-6">
                             <div class="flex items-start justify-between mb-4">
@@ -195,10 +215,28 @@
                                 </div>
                             </div>
                             <p class="text-gray-600 mb-2">${policy['說明']}</p>
-                            <div class="flex flex-wrap gap-2 text-sm text-gray-500">
+                            <div class="flex flex-wrap gap-2 text-sm text-gray-500 mb-4">
                                 ${policy['政見來源'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['政見來源']}</span>` : ''}
                                 ${policy['延續追蹤'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['延續追蹤']}</span>` : ''}
                             </div>
+                            ${evidenceCount > 0 ? `
+                            <div class="evidence-section mt-4 pt-4 border-t border-gray-100">
+                                <button class="evidence-toggle text-sm text-blue-600 hover:underline" onclick="toggleEvidence(this)">
+                                    📎 查看佐證 (${evidenceCount})
+                                </button>
+                                <div class="evidence-list hidden mt-3 space-y-2">
+                                    ${evidence.map(ev => `
+                                        <div class="flex items-start gap-2 text-sm">
+                                            <span>${evidenceIcons[ev['類型']] || '📄'}</span>
+                                            <div>
+                                                <a href="${ev['連結']}" target="_blank" class="text-blue-600 hover:underline">${ev['標題']}</a>
+                                                <p class="text-xs text-gray-500">${ev['來源']} · ${ev['日期']}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
                     `;
                 }).join('');

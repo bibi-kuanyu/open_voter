@@ -181,13 +181,17 @@
                                     <ul class="space-y-2">
                                         ${displayPolicies.map(policy => {
                                             const status = policy['延續追蹤'] === '延續政見' && !isWinner ? '政黨延續' : policy['KPI狀態'];
+                                            const evidenceCount = policy['佐證'] ? policy['佐證'].length : 0;
                                             return `
                                             <li class="flex items-start gap-2 text-sm">
                                                 <span class="text-lg">${statusIcons[status] || '⚪'}</span>
-                                                <div>
+                                                <div class="flex-1">
                                                     <p class="text-gray-800">${policy['標題']}</p>
                                                     <p class="text-xs text-gray-400">${policy['說明']}</p>
-                                                    ${policy['政見來源'] ? `<span class="text-xs text-gray-500">(${policy['政見來源']})</span>` : ''}
+                                                    <div class="flex items-center gap-2 mt-1">
+                                                        ${policy['政見來源'] ? `<span class="text-xs text-gray-500">(${policy['政見來源']})</span>` : ''}
+                                                        ${evidenceCount > 0 ? `<span class="text-xs text-blue-600">📎 ${evidenceCount} 佐證</span>` : ''}
+                                                    </div>
                                                 </div>
                                             </li>
                                         `}).join('')}
