@@ -84,19 +84,50 @@
 
     <!-- Main Content -->
     <main class="flex-1 py-12 md:py-16">
-        <div class="max-w-4xl mx-auto px-4">
-            <!-- Coming Soon Badge -->
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span class="font-medium">籌備中</span>
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">2026 地方選舉專題</h2>
+            <p class="text-lg text-gray-500 text-center mb-12">追蹤縣市長及議員候選人政見履行承諾</p>
+
+            <!-- Quick Navigation -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- Magistrates Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">縣市長候選人</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">目前已收錄台北、新北、桃園、台中等主要縣市之政黨提名名單及政見追蹤。</p>
+                    <a href="/open_voter/pages/2026/magistrates.html" class="inline-flex items-center gap-2 text-blue-600 font-bold hover:gap-3 transition-all">
+                        <span>進入查詢頁面</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Councilors Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">縣市議員候選人</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">各政黨議員初選及提名作業進行中，我們將同步追蹤各選區候選人名單。</p>
+                    <a href="/open_voter/pages/2026/councilors.html" class="inline-flex items-center gap-2 text-green-600 font-bold hover:gap-3 transition-all">
+                        <span>即將上線</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
-
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">2026 地方選舉</h2>
-            <p class="text-lg text-gray-500 text-center mb-12">地方自治層級選舉</p>
 
             <!-- Countdown Timer -->
             <div class="bg-white rounded-xl shadow-md p-8 mb-8">
