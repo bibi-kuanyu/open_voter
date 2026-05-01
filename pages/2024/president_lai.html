@@ -41,6 +41,9 @@
         .status-pending { background-color: #f3f4f6; color: #374151; }
         .status-failed { background-color: #fee2e2; color: #991b1b; }
         .status-party-continued { background-color: #dbeafe; color: #1e40af; }
+        .category-btn { transition: all 0.2s; }
+        .category-btn.active { background-color: #1a56db; color: white; border-color: #1a56db; }
+        .category-btn:not(.active):hover { background-color: #f3f4f6; }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
@@ -114,6 +117,16 @@
                 
                 <div id="policies-progress" class="mb-6"></div>
                 
+                <!-- Category Filter -->
+                <div id="category-filter" class="mb-6">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3">依分類篩選：</h3>
+                    <div class="flex flex-wrap gap-2" id="category-buttons">
+                        <button class="category-btn active px-3 py-1.5 rounded-full text-sm font-medium border border-gray-300 bg-gray-100 text-gray-700" data-category="all">
+                            全部
+                        </button>
+                    </div>
+                </div>
+                
                 <div id="policies-container" class="space-y-6">
                     <!-- Loading State -->
                     <div class="text-center py-8">
@@ -167,6 +180,26 @@
             '事實查核': '🔍'
         };
 
+        const categoryIcons = {
+            '能源': '⚡',
+            '教育': '📚',
+            '醫療': '🏥',
+            '國防': '🛡️',
+            '外交': '🌍',
+            '社會福利': '🤝',
+            '居住': '🏠',
+            '財政': '💰',
+            '數位': '💻',
+            '產業': '🏭',
+            '兩岸': '🌊',
+            '交通': '🚄',
+            '環境': '🌿',
+            '農業': '🌾'
+        };
+
+        let allPolicies = [];
+        let currentCategory = 'all';
+
         function toggleEvidence(btn) {
             const list = btn.nextElementSibling;
             const isHidden = list.classList.contains('hidden');
@@ -177,6 +210,102 @@
                 list.classList.add('hidden');
                 btn.innerHTML = btn.innerHTML.replace('📎 隱藏佐證', '📎 查看佐證');
             }
+        }
+
+        function toggleExpertOpinion(btn) {
+            const content = btn.nextElementSibling;
+            const isHidden = content.classList.contains('hidden');
+            if (isHidden) {
+                content.classList.remove('hidden');
+                btn.innerHTML = btn.innerHTML.replace('👤 查看專家觀點', '👤 隱藏專家觀點');
+            } else {
+                content.classList.add('hidden');
+                btn.innerHTML = btn.innerHTML.replace('👤 隱藏專家觀點', '👤 查看專家觀點');
+            }
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+            });
+
+            const filtered = category === 'all' 
+                ? allPolicies 
+                : allPolicies.filter(p => p['分類'] === category);
+
+            renderPolicies(filtered);
+        }
+
+        function renderPolicies(policies) {
+            const container = document.getElementById('policies-container');
+            
+            if (policies.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">此分類尚無政見資料</p>';
+                return;
+            }
+
+            container.innerHTML = policies.map(policy => {
+                const status = statusLabels[policy['KPI狀態']] || statusLabels['待追蹤'];
+                const evidence = policy['佐證'] || [];
+                const evidenceCount = evidence.length;
+                const category = policy['分類'] || '';
+                const categoryIcon = categoryIcons[category] || '📋';
+                const expertOpinion = policy['專家觀點'] || '';
+                return `
+                    <div class="border border-gray-200 rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-700">
+                                        <span>${categoryIcon}</span>
+                                        <span>${category}</span>
+                                    </span>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class} mt-2">
+                                    <span>${status.icon}</span>
+                                    <span>${status.text}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-2">${policy['說明']}</p>
+                        <div class="flex flex-wrap gap-2 text-sm text-gray-500 mb-4">
+                            ${policy['政見來源'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['政見來源']}</span>` : ''}
+                            ${policy['延續追蹤'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['延續追蹤']}</span>` : ''}
+                        </div>
+                        ${expertOpinion ? `
+                        <div class="expert-section mt-4 pt-4 border-t border-gray-100">
+                            <button class="expert-toggle text-sm text-purple-600 hover:underline" onclick="toggleExpertOpinion(this)">
+                                👤 查看專家觀點
+                            </button>
+                            <div class="expert-content hidden mt-3 bg-purple-50 rounded-lg p-4">
+                                <p class="text-sm text-gray-700">${expertOpinion}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+                        ${evidenceCount > 0 ? `
+                        <div class="evidence-section mt-4 pt-4 border-t border-gray-100">
+                            <button class="evidence-toggle text-sm text-blue-600 hover:underline" onclick="toggleEvidence(this)">
+                                📎 查看佐證 (${evidenceCount})
+                            </button>
+                            <div class="evidence-list hidden mt-3 space-y-2">
+                                ${evidence.map(ev => `
+                                    <div class="flex items-start gap-2 text-sm">
+                                        <span>${evidenceIcons[ev['類型']] || '📄'}</span>
+                                        <div>
+                                            <a href="${ev['連結']}" target="_blank" class="text-blue-600 hover:underline">${ev['標題']}</a>
+                                            <p class="text-xs text-gray-500">${ev['來源']} · ${ev['日期']}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         async function loadPolicies() {
@@ -191,8 +320,10 @@
                     return;
                 }
 
-                const policyCount = candidate['政見'].length;
-                const completedCount = candidate['政見'].filter(p => p['KPI狀態'] === '已完成').length;
+                allPolicies = candidate['政見'];
+
+                const policyCount = allPolicies.length;
+                const completedCount = allPolicies.filter(p => p['KPI狀態'] === '已完成').length;
                 const progress = Math.round((completedCount / policyCount) * 100);
                 
                 const progressColor = progress === 100 ? 'bg-green-500' : progress >= 50 ? 'bg-blue-500' : progress > 0 ? 'bg-yellow-500' : 'bg-red-500';
@@ -208,54 +339,34 @@
                         </div>
                     </div>
                 `;
-                
-                container.innerHTML = candidate['政見'].map(policy => {
-                    const status = statusLabels[policy['KPI狀態']] || statusLabels['待追蹤'];
-                    const evidence = policy['佐證'] || [];
-                    const evidenceCount = evidence.length;
-                    return `
-                        <div class="border border-gray-200 rounded-lg p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900">${policy['標題']}</h3>
-                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.class}">
-                                        <span>${status.icon}</span>
-                                        <span>${status.text}</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 mb-2">${policy['說明']}</p>
-                            <div class="flex flex-wrap gap-2 text-sm text-gray-500 mb-4">
-                                ${policy['政見來源'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['政見來源']}</span>` : ''}
-                                ${policy['延續追蹤'] ? `<span class="bg-gray-100 px-2 py-1 rounded">${policy['延續追蹤']}</span>` : ''}
-                            </div>
-                            ${evidenceCount > 0 ? `
-                            <div class="evidence-section mt-4 pt-4 border-t border-gray-100">
-                                <button class="evidence-toggle text-sm text-blue-600 hover:underline" onclick="toggleEvidence(this)">
-                                    📎 查看佐證 (${evidenceCount})
-                                </button>
-                                <div class="evidence-list hidden mt-3 space-y-2">
-                                    ${evidence.map(ev => `
-                                        <div class="flex items-start gap-2 text-sm">
-                                            <span>${evidenceIcons[ev['類型']] || '📄'}</span>
-                                            <div>
-                                                <a href="${ev['連結']}" target="_blank" class="text-blue-600 hover:underline">${ev['標題']}</a>
-                                                <p class="text-xs text-gray-500">${ev['來源']} · ${ev['日期']}</p>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
+
+                const categories = [...new Set(allPolicies.map(p => p['分類']).filter(Boolean))];
+                const categoryButtonsContainer = document.getElementById('category-buttons');
+                categories.forEach(cat => {
+                    const count = allPolicies.filter(p => p['分類'] === cat).length;
+                    const icon = categoryIcons[cat] || '📋';
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn px-3 py-1.5 rounded-full text-sm font-medium border border-gray-300 bg-gray-100 text-gray-700';
+                    btn.dataset.category = cat;
+                    btn.innerHTML = `${icon} ${cat} (${count})`;
+                    btn.onclick = () => filterByCategory(cat);
+                    categoryButtonsContainer.appendChild(btn);
+                });
+
+                renderPolicies(allPolicies);
             } catch (error) {
                 console.error('Error loading policies:', error);
                 document.getElementById('policies-container').innerHTML = 
                     '<p class="text-gray-500 text-center py-8">載入政見資料失敗， 請稍後再試。</p>';
             }
         }
+
+        document.getElementById('category-buttons').addEventListener('click', (e) => {
+            const btn = e.target.closest('.category-btn');
+            if (btn) {
+                filterByCategory(btn.dataset.category);
+            }
+        });
 
         loadPolicies();
     </script>
