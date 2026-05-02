@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物履歷檔案 - Open Voter</title>
+    <meta name="description" content="政治人物歷屆選舉政見與履約情形追蹤。">
+    <meta name="robots" content="index, follow">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f9fafb; }
+        .hero-gradient { background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%); }
+        .party-dpp { background: linear-gradient(135deg, #28a745 0%, #34c759 100%); }
+        .party-kmt { background: linear-gradient(135deg, #007afd 0%, #005bb5 100%); }
+        .party-tp { background: linear-gradient(135deg, #8ab4f8 0%, #4285f4 100%); }
+        .party-pfp { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .party-np { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+        .result-won { background-color: #d1fae5; color: #065f46; }
+        .result-lost { background-color: #fee2e2; color: #991b1b; }
+        .result-pending { background-color: #dbeafe; color: #1e40af; }
+        .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .collapse-content.open { max-height: 2000px; }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/open_voter/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
+                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
+                    </div>
+                </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="/open_voter/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
+                <a href="/open_voter/pages/2024.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2024 選舉</a>
+                <a href="/open_voter/pages/2026.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2026 選舉</a>
+                <a href="/open_voter/pages/persons.html" class="text-sm text-blue-600 font-medium hover:text-blue-700 transition-colors">人物檔案</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <nav class="flex items-center gap-2 text-sm">
+                <a href="/open_voter/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <a href="/open_voter/pages/persons.html" class="text-gray-500 hover:text-blue-600 transition-colors">人物檔案</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span id="breadcrumb-name" class="text-gray-900 font-medium">載入中...</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <!-- Loading -->
+            <div id="loading" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="mt-4 text-gray-500">載入人物資料中...</p>
+            </div>
+
+            <!-- Person Profile -->
+            <div id="profile-container" class="hidden space-y-8">
+                <!-- Basic Info Card -->
+                <div id="basic-card" class="bg-white rounded-xl shadow-md p-8"></div>
+
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                        <div id="metric-elections" class="text-3xl font-bold text-blue-600">-</div>
+                        <div class="text-sm text-gray-500 mt-1">歷屆選舉</div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                        <div id="metric-pledges" class="text-3xl font-bold text-blue-600">-</div>
+                        <div class="text-sm text-gray-500 mt-1">總政見數</div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                        <div id="metric-completed" class="text-3xl font-bold text-green-600">-</div>
+                        <div class="text-sm text-gray-500 mt-1">已完成</div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                        <div id="metric-rate" class="text-3xl font-bold text-gray-700">-</div>
+                        <div class="text-sm text-gray-500 mt-1">平均達成率</div>
+                    </div>
+                </div>
+
+                <!-- Chart: Cross-election Bar Chart -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">📊 歷屆達成率對照</h3>
+                    <canvas id="electionBarChart" style="max-height: 300px;"></canvas>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">🗓️ 選舉經歷時間軸</h3>
+                    <div id="timeline" class="space-y-4"></div>
+                </div>
+
+                <!-- Election Foldout Sections -->
+                <div id="elections-section" class="space-y-4"></div>
+
+                <!-- Related Links -->
+                <div id="related-links" class="bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">🔗 相關連結</h3>
+                    <div id="links-container" class="flex flex-wrap gap-3"></div>
+                </div>
+            </div>
+
+            <!-- Not Found -->
+            <div id="not-found" class="text-center py-12 hidden">
+                <p class="text-gray-500 text-lg">查無此人資料</p>
+                <a href="/open_voter/pages/persons.html" class="mt-4 inline-block text-blue-600 hover:underline">返回人物總覽</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const partyClassMap = {
+            '民主進步黨': 'party-dpp',
+            '中國國民黨': 'party-kmt',
+            '台灣民眾黨': 'party-tp',
+            '親民黨': 'party-pfp',
+            '時代力量': 'party-np'
+        };
+
+        function getPartyClass(party) {
+            return partyClassMap[party] || 'bg-gray-500';
+        }
+
+        function getResultClass(result) {
+            if (result === '當選') return 'result-won';
+            if (result === '未當選' || result === '落選') return 'result-lost';
+            return 'result-pending';
+        }
+
+        function getPersonIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        function toggleCollapse(btn) {
+            const content = btn.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            if (isOpen) {
+                content.classList.remove('open');
+                btn.innerHTML = btn.innerHTML.replace('收起', '展開');
+            } else {
+                content.classList.add('open');
+                btn.innerHTML = btn.innerHTML.replace('展開', '收起');
+            }
+        }
+
+        let barChartInstance = null;
+
+        async function loadPerson() {
+            const personId = getPersonIdFromUrl();
+            if (!personId) {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('not-found').classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const [personsRes, candidatesRes] = await Promise.all([
+                    fetch('/open_voter/data/persons.json'),
+                    fetch('/open_voter/data/candidates.json')
+                ]);
+                const personsData = await personsRes.json();
+                const candidatesData = await candidatesRes.json();
+                const person = personsData.persons[personId];
+
+                if (!person) {
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('not-found').classList.remove('hidden');
+                    return;
+                }
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('profile-container').classList.remove('hidden');
+                document.getElementById('breadcrumb-name').textContent = person.name;
+
+                // Update page title
+                document.title = `${person.name} - 政治人物履歷檔案 - Open Voter`;
+
+                const partyClass = getPartyClass(person.party);
+
+                // Basic card
+                document.getElementById('basic-card').innerHTML = `
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                        <div class="w-24 h-24 rounded-full ${partyClass} flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-4xl font-bold">${person.name.charAt(0)}</span>
+                        </div>
+                        <div class="text-center md:text-left flex-1">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-1">${person.name}</h2>
+                            <p class="text-lg text-gray-600 mb-2">${person.party}</p>
+                            <p class="text-sm text-gray-500">共參加 ${person.elections.length} 屆選舉</p>
+                        </div>
+                    </div>
+                `;
+
+                // Metrics
+                const totalElections = person.elections.length;
+                const totalPledges = person.elections.reduce((s, e) => s + (e.pledgeCount || 0), 0);
+                const totalCompleted = person.elections.reduce((s, e) => s + (e.completedCount || 0), 0);
+                const avgRate = totalPledges > 0 ? Math.round((totalCompleted / totalPledges) * 100) : 0;
+
+                document.getElementById('metric-elections').textContent = totalElections;
+                document.getElementById('metric-pledges').textContent = totalPledges;
+                document.getElementById('metric-completed').textContent = totalCompleted;
+                document.getElementById('metric-rate').textContent = avgRate + '%';
+
+                // Bar chart
+                const validElections = person.elections.filter(e => e.pledgeCount > 0);
+                if (validElections.length > 0) {
+                    const labels = validElections.map(e => `${e.year} ${e.type}`);
+                    const rates = validElections.map(e =>
+                        e.pledgeCount > 0 ? Math.round((e.completedCount / e.pledgeCount) * 100) : 0
+                    );
+                    const colors = validElections.map(e =>
+                        e.result === '當選' ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'
+                    );
+
+                    if (barChartInstance) barChartInstance.destroy();
+                    const ctx = document.getElementById('electionBarChart').getContext('2d');
+                    barChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels,
+                            datasets: [{
+                                label: '達成率 (%)',
+                                data: rates,
+                                backgroundColor: colors,
+                                borderColor: colors.map(c => c.replace('0.7', '1')),
+                                borderWidth: 1,
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { min: 0, max: 100, ticks: { stepSize: 25 } }
+                            }
+                        }
+                    });
+                }
+
+                // Timeline
+                const timeline = document.getElementById('timeline');
+                timeline.innerHTML = person.elections.map((e, i) => `
+                    <div class="flex items-start gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-4 h-4 rounded-full bg-blue-500 mt-1.5"></div>
+                            ${i < person.elections.length - 1 ? '<div class="w-0.5 h-12 bg-gray-200"></div>' : ''}
+                        </div>
+                        <div class="pb-6">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-bold text-gray-900">${e.year}</span>
+                                <span class="text-gray-700">${e.type}</span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">
+                                ${e.role}${e.runningMate ? ' · 搭檔 ' + e.runningMate : ''}
+                            </p>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Election foldout sections
+                const electionsSection = document.getElementById('elections-section');
+                const pledgeSourceMap = {
+                    'internal:2024_president_lai': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '賴清德'),
+                    'internal:2024_president_hou': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '侯友宜'),
+                    'internal:2024_president_ko': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '柯文哲'),
+                };
+
+                electionsSection.innerHTML = person.elections.map((e, i) => {
+                    const hasDetail = !!e.pageUrl;
+                    return `
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors" onclick="toggleCollapse(this)">
+                                <div>
+                                    <span class="font-bold text-gray-900">${e.year} ${e.type}</span>
+                                    <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    ${e.pledgeCount > 0 ? `<span class="text-sm text-gray-500">${e.completedCount}/${e.pledgeCount} 已達成</span>` : ''}
+                                    <svg class="w-5 h-5 text-gray-400 collapse-arrow transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </button>
+                            <div class="collapse-content">
+                                <div class="px-6 py-4 border-t border-gray-100">
+                                    ${hasDetail ? `<p class="text-sm text-gray-500 mb-3">此候選人頁面有待實作政見詳細資料。</p>` : `<p class="text-sm text-gray-500 mb-3">尚無詳細政見資料。</p>`}
+                                    ${e.pageUrl ? `<a href="${e.pageUrl}" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">📄 查看候選人頁面 →</a>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Related links
+                const linksContainer = document.getElementById('links-container');
+                const hasLinks = person.elections.some(e => e.pageUrl);
+                if (hasLinks) {
+                    document.getElementById('related-links').classList.remove('hidden');
+                    linksContainer.innerHTML = person.elections
+                        .filter(e => e.pageUrl)
+                        .map(e => `
+                            <a href="${e.pageUrl}" class="inline-flex items-center gap-1 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors">
+                                📄 ${e.year} ${e.type} 候選人頁面
+                            </a>
+                        `).join('');
+                } else {
+                    document.getElementById('related-links').classList.add('hidden');
+                }
+
+            } catch (error) {
+                console.error('Error loading person:', error);
+                document.getElementById('loading').innerHTML =
+                    '<p class="text-red-500 text-center py-8">載入資料失敗，請稍後再試。</p>';
+            }
+        }
+
+        loadPerson();
+    </script>
+</body>
+</html>

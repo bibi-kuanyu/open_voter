@@ -1,0 +1,133 @@
+{
+  "persons": {
+    "lai_ching-te": {
+      "name": "賴清德",
+      "party": "民主進步黨",
+      "elections": [
+        {
+          "year": 2024,
+          "type": "總統大選",
+          "role": "候選人",
+          "result": "當選",
+          "runningMate": "蕭美琴",
+          "pledgeSource": "internal:2024_president_lai",
+          "pageUrl": "/open_voter/pages/2024/president_lai.html",
+          "pledgeCount": 12,
+          "completedCount": 3
+        },
+        {
+          "year": 2020,
+          "type": "副總統大選",
+          "role": "副總統候選人",
+          "result": "當選",
+          "runningMate": "蔡英文",
+          "pledgeSource": null,
+          "pageUrl": null,
+          "pledgeCount": 8,
+          "completedCount": 6
+        }
+      ]
+    },
+    "hou_you-yi": {
+      "name": "侯友宜",
+      "party": "中國國民黨",
+      "elections": [
+        {
+          "year": 2024,
+          "type": "總統大選",
+          "role": "候選人",
+          "result": "未當選",
+          "runningMate": "趙少康",
+          "pledgeSource": "internal:2024_president_hou",
+          "pageUrl": "/open_voter/pages/2024/president_hou.html",
+          "pledgeCount": 10,
+          "completedCount": 0
+        },
+        {
+          "year": 2018,
+          "type": "新北市長",
+          "role": "候選人",
+          "result": "當選",
+          "runningMate": null,
+          "pledgeSource": null,
+          "pageUrl": null,
+          "pledgeCount": 15,
+          "completedCount": 9
+        }
+      ]
+    },
+    "ko_wen-je": {
+      "name": "柯文哲",
+      "party": "台灣民眾黨",
+      "elections": [
+        {
+          "year": 2024,
+          "type": "總統大選",
+          "role": "候選人",
+          "result": "未當選",
+          "runningMate": "吳欣盈",
+          "pledgeSource": "internal:2024_president_ko",
+          "pageUrl": "/open_voter/pages/2024/president_ko.html",
+          "pledgeCount": 10,
+          "completedCount": 0
+        },
+        {
+          "year": 2018,
+          "type": "台北市長",
+          "role": "候選人",
+          "result": "當選",
+          "runningMate": null,
+          "pledgeSource": null,
+          "pageUrl": null,
+          "pledgeCount": 12,
+          "completedCount": 7
+        }
+      ]
+    },
+    "jiang_qi-chen": {
+      "name": "江啟臣",
+      "party": "中國國民黨",
+      "elections": [
+        {
+          "year": 2026,
+          "type": "台中市長",
+          "role": "候選人",
+          "result": "待選舉",
+          "runningMate": null,
+          "pledgeSource": null,
+          "pageUrl": "/open_voter/pages/2026/magistrates/台中市/江啟臣.html",
+          "pledgeCount": 0,
+          "completedCount": 0
+        },
+        {
+          "year": 2022,
+          "type": "立法委員",
+          "role": "候選人",
+          "result": "當選",
+          "runningMate": null,
+          "pledgeSource": null,
+          "pageUrl": null,
+          "pledgeCount": 8,
+          "completedCount": 4
+        }
+      ]
+    },
+    "he_xin-chun": {
+      "name": "何欣純",
+      "party": "民主進步黨",
+      "elections": [
+        {
+          "year": 2026,
+          "type": "台中市長",
+          "role": "候選人",
+          "result": "待選舉",
+          "runningMate": null,
+          "pledgeSource": null,
+          "pageUrl": "/open_voter/pages/2026/magistrates/台中市/何欣純.html",
+          "pledgeCount": 0,
+          "completedCount": 0
+        }
+      ]
+    }
+  }
+}
