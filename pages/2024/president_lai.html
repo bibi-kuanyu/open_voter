@@ -22,6 +22,7 @@
     <meta name="twitter:description" content="賴清德政見履約追蹤">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -115,8 +116,46 @@
             <div class="bg-white rounded-xl shadow-md p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">政見與履約狀態</h2>
                 
-                <div id="policies-progress" class="mb-6"></div>
-                
+                <div id="policies-progress" class="mb-8"></div>
+
+                <!-- New Visual Charts Section -->
+                <div id="charts-section" class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Donut Chart -->
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h3 class="text-base font-semibold text-gray-800 mb-4 text-center">📊 整體達成率</h3>
+                        <div class="relative" style="width:180px;height:180px;margin:0 auto;">
+                            <canvas id="donutChart"></canvas>
+                            <div id="donut-center" class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="donut-percent" class="text-3xl font-bold text-gray-900">0%</span>
+                                <span class="text-xs text-gray-500">達成率</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 space-y-2">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-green-500"></span>已完成</span>
+                                <span id="donut-completed" class="font-medium">0</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span>進行中</span>
+                                <span id="donut-inprogress" class="font-medium">0</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-gray-300"></span>待追蹤</span>
+                                <span id="donut-pending" class="font-medium">0</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-400"></span>未達成</span>
+                                <span id="donut-failed" class="font-medium">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Radar Chart -->
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h3 class="text-base font-semibold text-gray-800 mb-4 text-center">🎯 各分類達成雷達圖</h3>
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
                 <!-- Category Filter -->
                 <div id="category-filter" class="mb-6">
                     <h3 class="text-sm font-medium text-gray-700 mb-3">依分類篩選：</h3>
@@ -354,6 +393,9 @@
                 });
 
                 renderPolicies(allPolicies);
+
+                // === Render Visualization Charts ===
+                renderCharts(allPolicies);
             } catch (error) {
                 console.error('Error loading policies:', error);
                 document.getElementById('policies-container').innerHTML = 
@@ -367,6 +409,106 @@
                 filterByCategory(btn.dataset.category);
             }
         });
+
+        // === Chart Rendering Functions ===
+        let donutChartInstance = null;
+        let radarChartInstance = null;
+
+        function renderCharts(policies) {
+            const counts = {
+                '已完成': 0,
+                '進行中': 0,
+                '待追蹤': 0,
+                '未達成': 0,
+                '政黨延續': 0
+            };
+            policies.forEach(p => {
+                const s = p['KPI狀態'];
+                if (counts.hasOwnProperty(s)) counts[s]++;
+                else counts['待追蹤']++;
+            });
+
+            // --- Donut Chart ---
+            document.getElementById('donut-completed').textContent = counts['已完成'];
+            document.getElementById('donut-inprogress').textContent = counts['進行中'] + counts['政黨延續'];
+            document.getElementById('donut-pending').textContent = counts['待追蹤'];
+            document.getElementById('donut-failed').textContent = counts['未達成'];
+
+            const total = policies.length || 1;
+            const percent = Math.round((counts['已完成'] / total) * 100);
+            document.getElementById('donut-percent').textContent = percent + '%';
+
+            if (donutChartInstance) donutChartInstance.destroy();
+            const donutCtx = document.getElementById('donutChart').getContext('2d');
+            donutChartInstance = new Chart(donutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['已完成', '進行中/政黨延續', '待追蹤', '未達成'],
+                    datasets: [{
+                        data: [counts['已完成'], counts['進行中'] + counts['政黨延續'], counts['待追蹤'], counts['未達成']],
+                        backgroundColor: ['#22c55e', '#3b82f6', '#9ca3af', '#f87171'],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+
+            // --- Radar Chart (by category) ---
+            const categoryMap = {};
+            policies.forEach(p => {
+                const cat = p['分類'] || '其他';
+                if (!categoryMap[cat]) categoryMap[cat] = { total: 0, completed: 0 };
+                categoryMap[cat].total++;
+                if (p['KPI狀態'] === '已完成') categoryMap[cat].completed++;
+            });
+
+            const catLabels = Object.keys(categoryMap);
+            const catData = catLabels.map(c => Math.round((categoryMap[c].completed / categoryMap[c].total) * 100));
+            const catColors = [
+                '#6366f1','#8b5cf6','#a855f7','#d946ef',
+                '#ec4899','#f43f5e','#ef4444','#f97316',
+                '#eab308','#84cc16','#22c55e','#10b981',
+                '#14b8a6','#06b6d4'
+            ];
+
+            if (radarChartInstance) radarChartInstance.destroy();
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChartInstance = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: catLabels.map(l => categoryIcons[l] ? categoryIcons[l] + ' ' + l : l),
+                    datasets: [{
+                        label: '達成率 (%)',
+                        data: catData,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 0.8)',
+                        pointBackgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            min: 0, max: 100,
+                            ticks: { stepSize: 25, backdropColor: 'transparent', font: { size: 10 } },
+                            pointLabels: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
 
         loadPolicies();
     </script>
