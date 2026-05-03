@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>候選人比較 - Open Voter</title>
+    <meta name="description" content="比較不同候選人的政見達成率與政策立場差異。">
+    <meta name="robots" content="index, follow">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f9fafb; }
+        .hero-gradient { background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%); }
+        .party-dpp { background: linear-gradient(135deg, #28a745 0%, #34c759 100%); }
+        .party-kmt { background: linear-gradient(135deg, #007afd 0%, #005bb5 100%); }
+        .party-tp { background: linear-gradient(135deg, #8ab4f8 0%, #4285f4 100%); }
+        .party-pfp { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .party-np { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(26, 86, 219, 0.15); }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/open_voter/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
+                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
+                    </div>
+                </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="/open_voter/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
+                <a href="/open_voter/pages/2024.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2024 選舉</a>
+                <a href="/open_voter/pages/persons.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">人物檔案</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <nav class="flex items-center gap-2 text-sm">
+                <a href="/open_voter/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="text-gray-900 font-medium">候選人比較</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- No Selection State -->
+            <div id="no-selection" class="text-center py-16">
+                <div class="text-6xl mb-4">⚖️</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">請選擇要比較的候選人</h2>
+                <p class="text-gray-500 mb-8">從候選人頁面勾選要比較的候選人，即可進行橫向比較分析</p>
+                <a href="/open_voter/pages/2024/president.html" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <span>前往選擇候選人</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Compare Container -->
+            <div id="compare-container" class="hidden">
+                <!-- Compare Header -->
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">📊 候選人比較分析</h2>
+                    <p class="text-lg text-gray-500">橫向比較候選人的政見達成率與政策立場</p>
+                </div>
+
+                <!-- Overall Rate Comparison -->
+                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">🎯 整體達成率比較</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="overall-cards"></div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">📈 各分類政見雷達圖</h3>
+                    <div class="max-w-2xl mx-auto">
+                        <canvas id="radarChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Category Comparison Table -->
+                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">📋 各分類政見進度</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead id="category-table-header"></thead>
+                            <tbody id="category-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Expert Opinions Section -->
+                <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">💬 專家觀點比較</h3>
+                    <div id="expert-opinions" class="space-y-4"></div>
+                </div>
+
+                <!-- Detailed Policies -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">📜 詳細政見對照</h3>
+                    <div id="detailed-policies" class="space-y-6"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const partyClassMap = {
+            '民主進步黨': 'party-dpp',
+            '中國國民黨': 'party-kmt',
+            '台灣民眾黨': 'party-tp',
+            '親民黨': 'party-pfp',
+            '時代力量': 'party-np'
+        };
+
+        const partyColors = {
+            '民主進步黨': { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-500', chart: 'rgba(34, 197, 94, 0.7)' },
+            '中國國民黨': { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-500', chart: 'rgba(0, 122, 253, 0.7)' },
+            '台灣民眾黨': { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-500', chart: 'rgba(249, 115, 22, 0.7)' }
+        };
+
+        const statusColors = {
+            '已完成': { bg: 'bg-green-100', text: 'text-green-700', icon: '✅' },
+            '進行中': { bg: 'bg-blue-100', text: 'text-blue-700', icon: '🔵' },
+            '待追蹤': { bg: 'bg-gray-100', text: 'text-gray-700', icon: '⚪' },
+            '未達成': { bg: 'bg-red-100', text: 'text-red-700', icon: '❌' }
+        };
+
+        // Get candidates from URL params
+        function getCompareCandidatesFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const ids = params.get('ids');
+            return ids ? ids.split(',') : [];
+        }
+
+        async function loadComparison() {
+            const candidateIds = getCompareCandidatesFromUrl();
+            
+            if (candidateIds.length < 2) {
+                document.getElementById('no-selection').classList.remove('hidden');
+                document.getElementById('compare-container').classList.add('hidden');
+                return;
+            }
+
+            try {
+                const [personsRes, candidatesRes] = await Promise.all([
+                    fetch('/open_voter/data/persons.json'),
+                    fetch('/open_voter/data/candidates.json')
+                ]);
+                const personsData = await personsRes.json();
+                const candidatesData = await candidatesRes.json();
+
+                // Map candidate IDs to actual candidate data
+                const candidates = candidateIds.map(id => {
+                    const person = personsData.persons[id];
+                    if (!person) return null;
+
+                    // Find election with pledgeSource
+                    const electionWithSource = person.elections.find(e => e.pledgeSource);
+                    let candidateData = null;
+
+                    if (electionWithSource) {
+                        const sourceParts = electionWithSource.pledgeSource.split(':')[1].split('_');
+                        const year = sourceParts[0];
+                        const type = sourceParts.slice(1, -1).join('大選'); // e.g., "總統" from "總統大選"
+                        const name = sourceParts[sourceParts.length - 1];
+                        
+                        // Map name to candidate data
+                        const nameMap = {
+                            'lai': '賴清德',
+                            'hou': '侯友宜',
+                            'ko': '柯文哲'
+                        };
+                        
+                        const candidateName = nameMap[name.replace('-', '')] || name;
+                        
+                        // Find in candidates data
+                        const electionKey = Object.keys(candidatesData[year]).find(k => k.includes('總統'));
+                        if (electionKey) {
+                            candidateData = candidatesData[year][electionKey]['候選人'].find(c => c['姓名'] === person.name);
+                        }
+                    }
+
+                    return {
+                        id,
+                        person,
+                        candidateData
+                    };
+                }).filter(Boolean);
+
+                if (candidates.length < 2) {
+                    document.getElementById('no-selection').classList.remove('hidden');
+                    document.getElementById('compare-container').classList.add('hidden');
+                    return;
+                }
+
+                document.getElementById('no-selection').classList.add('hidden');
+                document.getElementById('compare-container').classList.remove('hidden');
+
+                renderOverallCards(candidates);
+                renderRadarChart(candidates);
+                renderCategoryTable(candidates);
+                renderExpertOpinions(candidates);
+                renderDetailedPolicies(candidates);
+
+            } catch (error) {
+                console.error('Error loading comparison:', error);
+                document.getElementById('no-selection').innerHTML = '<p class="text-red-500">載入比較資料失敗，請稍後再試。</p>';
+            }
+        }
+
+        function renderOverallCards(candidates) {
+            const container = document.getElementById('overall-cards');
+            container.innerHTML = candidates.map(c => {
+                const partyClass = partyClassMap[c.person.party] || 'bg-gray-500';
+                const partyColor = partyColors[c.person.party] || { chart: 'rgba(156, 163, 175, 0.7)' };
+                
+                let pledgeCount = 0, completedCount = 0;
+                if (c.candidateData) {
+                    pledgeCount = c.candidateData['政見'].length;
+                    completedCount = c.candidateData['政見'].filter(p => p['KPI狀態'] === '已完成').length;
+                } else {
+                    pledgeCount = c.person.elections.reduce((s, e) => s + (e.pledgeCount || 0), 0);
+                    completedCount = c.person.elections.reduce((s, e) => s + (e.completedCount || 0), 0);
+                }
+                
+                const rate = pledgeCount > 0 ? Math.round((completedCount / pledgeCount) * 100) : 0;
+                const rateColor = rate >= 70 ? 'text-green-600' : rate >= 40 ? 'text-yellow-600' : 'text-red-500';
+
+                return `
+                    <div class="bg-white border-2 ${partyColor.border} rounded-xl p-6 text-center card-hover">
+                        <div class="w-16 h-16 rounded-full ${partyClass} flex items-center justify-center mx-auto mb-4">
+                            <span class="text-white text-2xl font-bold">${c.person.name.charAt(0)}</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-1">${c.person.name}</h4>
+                        <p class="text-sm text-gray-500 mb-4">${c.person.party}</p>
+                        <div class="text-4xl font-bold ${rateColor} mb-2">${rate}%</div>
+                        <p class="text-sm text-gray-500">${completedCount}/${pledgeCount} 政見達成</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        let radarChartInstance = null;
+
+        function renderRadarChart(candidates) {
+            const categories = ['國防', '外交', '兩岸', '社會福利', '醫療', '環境', '交通', '教育', '財政', '產業', '能源', '數位', '農業', '居住'];
+            
+            // Count completed/in-progress per category for each candidate
+            const datasets = candidates.map(c => {
+                const partyColor = partyColors[c.person.party] || { chart: 'rgba(156, 163, 175, 0.7)' };
+                let pledges = [];
+                
+                if (c.candidateData) {
+                    pledges = c.candidateData['政見'];
+                } else {
+                    // Aggregate from all elections
+                    c.person.elections.forEach(e => {
+                        // This is simplified - real implementation would need full data
+                    });
+                }
+
+                const data = categories.map(cat => {
+                    const categoryPledges = pledges.filter(p => p['分類'] === cat);
+                    const completed = categoryPledges.filter(p => p['KPI狀態'] === '已完成').length;
+                    const inProgress = categoryPledges.filter(p => p['KPI狀態'] === '進行中').length;
+                    return completed + (inProgress * 0.5);
+                });
+
+                return {
+                    label: c.person.name,
+                    data,
+                    backgroundColor: partyColor.chart.replace('0.7', '0.2'),
+                    borderColor: partyColor.chart,
+                    borderWidth: 2,
+                    pointBackgroundColor: partyColor.chart
+                };
+            });
+
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarChartInstance) radarChartInstance.destroy();
+            
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: categories,
+                    datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 5,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function renderCategoryTable(candidates) {
+            const categories = ['國防', '外交', '兩岸', '社會福利', '醫療', '環境', '交通', '教育', '財政', '產業', '能源', '數位', '農業', '居住'];
+            
+            const header = document.getElementById('category-table-header');
+            header.innerHTML = `
+                <tr class="border-b">
+                    <th class="text-left py-3 px-4 font-medium text-gray-700">分類</th>
+                    ${candidates.map(c => `<th class="text-center py-3 px-4 font-medium text-gray-700">${c.person.name}</th>`).join('')}
+                </tr>
+            `;
+
+            const body = document.getElementById('category-table-body');
+            body.innerHTML = categories.map(cat => {
+                const cells = candidates.map(c => {
+                    let pledges = [];
+                    if (c.candidateData) {
+                        pledges = c.candidateData['政見'].filter(p => p['分類'] === cat);
+                    }
+                    
+                    if (pledges.length === 0) {
+                        return '<td class="py-3 px-4 text-center text-gray-400">-</td>';
+                    }
+                    
+                    const completed = pledges.filter(p => p['KPI狀態'] === '已完成').length;
+                    const inProgress = pledges.filter(p => p['KPI狀態'] === '進行中').length;
+                    const total = pledges.length;
+                    const rate = Math.round(((completed + inProgress * 0.5) / total) * 100);
+                    
+                    const colorClass = rate >= 70 ? 'text-green-600' : rate >= 40 ? 'text-yellow-600' : 'text-red-500';
+                    
+                    return `<td class="py-3 px-4 text-center">
+                        <span class="${colorClass} font-medium">${rate}%</span>
+                        <span class="text-xs text-gray-400 block">${completed}/${total}</span>
+                    </td>`;
+                }).join('');
+                
+                return `<tr class="border-b border-gray-100 hover:bg-gray-50">${cells.length > 0 ? `<td class="py-3 px-4 font-medium text-gray-700">${cat}</td>` : ''}${cells}</tr>`;
+            }).filter(row => !row.includes('<td class="py-3 px-4 text-center text-gray-400">-</td>'.repeat(candidates.length))).join('');
+        }
+
+        function renderExpertOpinions(candidates) {
+            const container = document.getElementById('expert-opinions');
+            const opinions = [];
+            
+            candidates.forEach(c => {
+                if (c.candidateData) {
+                    c.candidateData['政見'].forEach(p => {
+                        if (p['專家觀點']) {
+                            opinions.push({
+                                candidate: c.person.name,
+                                party: c.person.party,
+                                policy: p['標題'],
+                                category: p['分類'],
+                                opinion: p['專家觀點']
+                            });
+                        }
+                    });
+                }
+            });
+
+            if (opinions.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">尚無專家觀點資料</p>';
+                return;
+            }
+
+            // Show first 6 expert opinions
+            container.innerHTML = opinions.slice(0, 6).map((o, i) => {
+                const partyColor = partyColors[o.party] || { bg: 'bg-gray-100', text: 'text-gray-700' };
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4 ${i % 2 === 0 ? '' : 'bg-gray-50'}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-sm font-medium ${partyColor.text}">${o.candidate}</span>
+                            <span class="text-xs text-gray-400">·</span>
+                            <span class="text-xs text-gray-500">${o.category}</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-800 mb-1">「${o.policy}」</p>
+                        <p class="text-sm text-gray-600 italic">💬 ${o.opinion}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDetailedPolicies(candidates) {
+            const container = document.getElementById('detailed-policies');
+            
+            // Find common categories
+            const allCategories = new Set();
+            candidates.forEach(c => {
+                if (c.candidateData) {
+                    c.candidateData['政見'].forEach(p => allCategories.add(p['分類']));
+                }
+            });
+
+            const categoryList = Array.from(allCategories).slice(0, 6); // Limit to 6 categories
+
+            container.innerHTML = categoryList.map(cat => {
+                const catOpinions = candidates.map(c => {
+                    if (!c.candidateData) return null;
+                    const pledge = c.candidateData['政見'].find(p => p['分類'] === cat);
+                    return pledge ? { candidate: c.person.name, party: c.person.party, pledge } : null;
+                }).filter(Boolean);
+
+                return `
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 px-4 py-3">
+                            <h4 class="font-bold text-gray-900">${cat}</h4>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            ${catOpinions.map(co => {
+                                const status = statusColors[co.pledge['KPI狀態']] || statusColors['待追蹤'];
+                                return `
+                                    <div class="flex items-start gap-3">
+                                        <span class="${status.bg} ${status.text} w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm">${status.icon}</span>
+                                        <div>
+                                            <p class="font-medium text-gray-900">${co.candidate}</p>
+                                            <p class="text-sm text-gray-700">${co.pledge['標題']}</p>
+                                            <p class="text-xs text-gray-500 mt-1">${co.pledge['說明']}</p>
+                                            ${co.pledge['專家觀點'] ? `<p class="text-xs text-gray-400 mt-2 italic">💬 ${co.pledge['專家觀點']}</p>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        loadComparison();
+    </script>
+</body>
+</html>

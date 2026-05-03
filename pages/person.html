@@ -23,8 +23,15 @@
         .result-won { background-color: #d1fae5; color: #065f46; }
         .result-lost { background-color: #fee2e2; color: #991b1b; }
         .result-pending { background-color: #dbeafe; color: #1e40af; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .status-completed { background-color: #d1fae5; color: #065f46; }
+        .status-in-progress { background-color: #dbeafe; color: #1e40af; }
+        .status-pending { background-color: #f3f4f6; color: #374151; }
+        .status-failed { background-color: #fee2e2; color: #991b1b; }
         .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .collapse-content.open { max-height: 2000px; }
+        .collapse-content.open { max-height: 5000px; }
+        .tab-active { border-bottom: 3px solid #1a56db; color: #1a56db; }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col">
@@ -71,8 +78,8 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex-1 py-12 md:py-16">
-        <div class="max-w-4xl mx-auto px-4">
+    <main class="flex-1 py-8 md:py-12">
+        <div class="max-w-5xl mx-auto px-4">
             <!-- Loading -->
             <div id="loading" class="text-center py-12">
                 <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
@@ -82,46 +89,81 @@
             <!-- Person Profile -->
             <div id="profile-container" class="hidden space-y-8">
                 <!-- Basic Info Card -->
-                <div id="basic-card" class="bg-white rounded-xl shadow-md p-8"></div>
+                <div id="basic-card" class="bg-white rounded-xl shadow-md p-6 md:p-8"></div>
+
+                <!-- Compare Button -->
+                <div class="flex justify-end gap-3">
+                    <button id="btn-compare" onclick="addToCompare()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span>加入比較</span>
+                    </button>
+                </div>
 
                 <!-- Metrics Cards -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
                         <div id="metric-elections" class="text-3xl font-bold text-blue-600">-</div>
                         <div class="text-sm text-gray-500 mt-1">歷屆選舉</div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
                         <div id="metric-pledges" class="text-3xl font-bold text-blue-600">-</div>
                         <div class="text-sm text-gray-500 mt-1">總政見數</div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
                         <div id="metric-completed" class="text-3xl font-bold text-green-600">-</div>
                         <div class="text-sm text-gray-500 mt-1">已完成</div>
                     </div>
-                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="bg-white rounded-xl shadow-md p-6 text-center card-hover">
                         <div id="metric-rate" class="text-3xl font-bold text-gray-700">-</div>
                         <div class="text-sm text-gray-500 mt-1">平均達成率</div>
                     </div>
                 </div>
 
-                <!-- Chart: Cross-election Bar Chart -->
-                <div class="bg-white rounded-xl shadow-md p-8">
-                    <h3 class="text-xl font-bold text-gray-900 mb-6">📊 歷屆達成率對照</h3>
-                    <canvas id="electionBarChart" style="max-height: 300px;"></canvas>
+                <!-- Tab Navigation -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="flex border-b border-gray-200">
+                        <button onclick="switchTab('timeline')" id="tab-timeline" class="flex-1 px-6 py-4 text-sm font-medium text-center hover:bg-gray-50 transition-colors tab-active">
+                            🗓️ 選舉時間軸
+                        </button>
+                        <button onclick="switchTab('trends')" id="tab-trends" class="flex-1 px-6 py-4 text-sm font-medium text-center hover:bg-gray-50 transition-colors text-gray-500">
+                            📈 達成率趨勢
+                        </button>
+                        <button onclick="switchTab('pledges')" id="tab-pledges" class="flex-1 px-6 py-4 text-sm font-medium text-center hover:bg-gray-50 transition-colors text-gray-500">
+                            📋 政見總覽
+                        </button>
+                    </div>
+
+                    <!-- Timeline Tab -->
+                    <div id="panel-timeline" class="p-6 md:p-8">
+                        <div id="timeline" class="space-y-4"></div>
+                    </div>
+
+                    <!-- Trends Tab -->
+                    <div id="panel-trends" class="p-6 md:p-8 hidden">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">歷屆達成率趨勢圖</h3>
+                            <p class="text-sm text-gray-500">從首次參選到現在的政見履行情形</p>
+                        </div>
+                        <div class="max-w-2xl mx-auto mb-8">
+                            <canvas id="trendLineChart" style="max-height: 300px;"></canvas>
+                        </div>
+                        <div id="trend-summary" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- Pledges Tab -->
+                    <div id="panel-pledges" class="p-6 md:p-8 hidden">
+                        <div id="pledges-list" class="space-y-4"></div>
+                    </div>
                 </div>
 
-                <!-- Timeline -->
-                <div class="bg-white rounded-xl shadow-md p-8">
-                    <h3 class="text-xl font-bold text-gray-900 mb-6">🗓️ 選舉經歷時間軸</h3>
-                    <div id="timeline" class="space-y-4"></div>
-                </div>
-
-                <!-- Election Foldout Sections -->
+                <!-- Election Detail Sections (Collapsible) -->
                 <div id="elections-section" class="space-y-4"></div>
 
                 <!-- Related Links -->
-                <div id="related-links" class="bg-white rounded-xl shadow-md p-8">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">🔗 相關連結</h3>
+                <div id="related-links" class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">🔗 相關連結</h3>
                     <div id="links-container" class="flex flex-wrap gap-3"></div>
                 </div>
             </div>
@@ -150,6 +192,21 @@
             '時代力量': 'party-np'
         };
 
+        const partyColors = {
+            '民主進步黨': '#28a745',
+            '中國國民黨': '#007afd',
+            '台灣民眾黨': '#4285f4',
+            '親民黨': '#f97316',
+            '時代力量': '#6b7280'
+        };
+
+        const statusColors = {
+            '已完成': { bg: 'status-completed', icon: '✅' },
+            '進行中': { bg: 'status-in-progress', icon: '🔵' },
+            '待追蹤': { bg: 'status-pending', icon: '⚪' },
+            '未達成': { bg: 'status-failed', icon: '❌' }
+        };
+
         function getPartyClass(party) {
             return partyClassMap[party] || 'bg-gray-500';
         }
@@ -170,17 +227,69 @@
             const isOpen = content.classList.contains('open');
             if (isOpen) {
                 content.classList.remove('open');
-                btn.innerHTML = btn.innerHTML.replace('收起', '展開');
+                btn.querySelector('.collapse-arrow').style.transform = 'rotate(0deg)';
             } else {
                 content.classList.add('open');
-                btn.innerHTML = btn.innerHTML.replace('展開', '收起');
+                btn.querySelector('.collapse-arrow').style.transform = 'rotate(180deg)';
             }
         }
 
-        let barChartInstance = null;
+        function switchTab(tabName) {
+            // Reset all tabs
+            ['timeline', 'trends', 'pledges'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.remove('tab-active');
+                document.getElementById(`tab-${t}`).classList.add('text-gray-500');
+                document.getElementById(`panel-${t}`).classList.add('hidden');
+            });
+
+            // Activate selected tab
+            document.getElementById(`tab-${tabName}`).classList.add('tab-active');
+            document.getElementById(`tab-${tabName}`).classList.remove('text-gray-500');
+            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+        }
+
+        function addToCompare() {
+            const personId = getPersonIdFromUrl();
+            if (!personId) return;
+
+            // Get existing compare list from localStorage
+            let compareList = JSON.parse(localStorage.getItem('compareCandidates') || '[]');
+            
+            if (!compareList.includes(personId)) {
+                compareList.push(personId);
+                localStorage.setItem('compareCandidates', JSON.stringify(compareList));
+                
+                // Update button
+                const btn = document.getElementById('btn-compare');
+                btn.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>已加入比較</span>
+                `;
+                btn.classList.remove('bg-blue-50', 'text-blue-700', 'hover:bg-blue-100');
+                btn.classList.add('bg-green-50', 'text-green-700');
+                
+                // Show notification
+                showNotification('已加入比較清單');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        let trendLineChartInstance = null;
+        let currentPersonId = null;
 
         async function loadPerson() {
             const personId = getPersonIdFromUrl();
+            currentPersonId = personId;
+            
             if (!personId) {
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('not-found').classList.remove('hidden');
@@ -205,132 +314,136 @@
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('profile-container').classList.remove('hidden');
                 document.getElementById('breadcrumb-name').textContent = person.name;
-
-                // Update page title
                 document.title = `${person.name} - 政治人物履歷檔案 - Open Voter`;
 
                 const partyClass = getPartyClass(person.party);
+                const partyColor = partyColors[person.party] || '#6b7280';
 
                 // Basic card
                 document.getElementById('basic-card').innerHTML = `
                     <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
-                        <div class="w-24 h-24 rounded-full ${partyClass} flex items-center justify-center flex-shrink-0">
-                            <span class="text-white text-4xl font-bold">${person.name.charAt(0)}</span>
+                        <div class="w-20 h-20 rounded-full ${partyClass} flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <span class="text-white text-3xl font-bold">${person.name.charAt(0)}</span>
                         </div>
                         <div class="text-center md:text-left flex-1">
-                            <h2 class="text-3xl font-bold text-gray-900 mb-1">${person.name}</h2>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">${person.name}</h2>
                             <p class="text-lg text-gray-600 mb-2">${person.party}</p>
-                            <p class="text-sm text-gray-500">共參加 ${person.elections.length} 屆選舉</p>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                    📅 共 ${person.elections.length} 屆選舉
+                                </span>
+                                ${person.elections.filter(e => e.result === '當選').length > 0 ? `
+                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                                    ✅ 當選 ${person.elections.filter(e => e.result === '當選').length} 次
+                                </span>
+                                ` : ''}
+                            </div>
                         </div>
                     </div>
                 `;
 
-                // Metrics
-                const totalElections = person.elections.length;
-                const totalPledges = person.elections.reduce((s, e) => s + (e.pledgeCount || 0), 0);
-                const totalCompleted = person.elections.reduce((s, e) => s + (e.completedCount || 0), 0);
+                // Calculate metrics from candidates.json for elections with pledgeSource
+                let totalPledges = 0;
+                let totalCompleted = 0;
+                const electionMetrics = [];
+
+                for (const election of person.elections) {
+                    let pledgeCount = election.pledgeCount || 0;
+                    let completedCount = election.completedCount || 0;
+
+                    // If has pledgeSource, try to get accurate data from candidates.json
+                    if (election.pledgeSource) {
+                        const sourceParts = election.pledgeSource.split(':');
+                        if (sourceParts.length === 2) {
+                            const [year, key] = sourceParts;
+                            // Try to extract candidate name
+                            const nameInSource = key.replace('2024_president_', '');
+                            const nameMap = { 'lai': '賴清德', 'hou': '侯友宜', 'ko': '柯文哲' };
+                            const candidateName = nameMap[nameInSource];
+
+                            if (candidatesData[year]) {
+                                const electionKey = Object.keys(candidatesData[year]).find(k => k.includes('總統'));
+                                if (electionKey && candidateName) {
+                                    const candidateData = candidatesData[year][electionKey]['候選人'].find(c => c['姓名'] === candidateName);
+                                    if (candidateData) {
+                                        pledgeCount = candidateData['政見'].length;
+                                        completedCount = candidateData['政見'].filter(p => p['KPI狀態'] === '已完成').length;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    totalPledges += pledgeCount;
+                    totalCompleted += completedCount;
+                    electionMetrics.push({
+                        year: election.year,
+                        type: election.type,
+                        pledgeCount,
+                        completedCount,
+                        result: election.result
+                    });
+                }
+
                 const avgRate = totalPledges > 0 ? Math.round((totalCompleted / totalPledges) * 100) : 0;
 
-                document.getElementById('metric-elections').textContent = totalElections;
+                document.getElementById('metric-elections').textContent = person.elections.length;
                 document.getElementById('metric-pledges').textContent = totalPledges;
                 document.getElementById('metric-completed').textContent = totalCompleted;
                 document.getElementById('metric-rate').textContent = avgRate + '%';
 
-                // Bar chart
-                const validElections = person.elections.filter(e => e.pledgeCount > 0);
-                if (validElections.length > 0) {
-                    const labels = validElections.map(e => `${e.year} ${e.type}`);
-                    const rates = validElections.map(e =>
-                        e.pledgeCount > 0 ? Math.round((e.completedCount / e.pledgeCount) * 100) : 0
-                    );
-                    const colors = validElections.map(e =>
-                        e.result === '當選' ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'
-                    );
-
-                    if (barChartInstance) barChartInstance.destroy();
-                    const ctx = document.getElementById('electionBarChart').getContext('2d');
-                    barChartInstance = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels,
-                            datasets: [{
-                                label: '達成率 (%)',
-                                data: rates,
-                                backgroundColor: colors,
-                                borderColor: colors.map(c => c.replace('0.7', '1')),
-                                borderWidth: 1,
-                                borderRadius: 6
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                y: { min: 0, max: 100, ticks: { stepSize: 25 } }
-                            }
-                        }
-                    });
-                }
-
                 // Timeline
                 const timeline = document.getElementById('timeline');
-                timeline.innerHTML = person.elections.map((e, i) => `
-                    <div class="flex items-start gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-4 h-4 rounded-full bg-blue-500 mt-1.5"></div>
-                            ${i < person.elections.length - 1 ? '<div class="w-0.5 h-12 bg-gray-200"></div>' : ''}
-                        </div>
-                        <div class="pb-6">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-gray-900">${e.year}</span>
-                                <span class="text-gray-700">${e.type}</span>
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">
-                                ${e.role}${e.runningMate ? ' · 搭檔 ' + e.runningMate : ''}
-                            </p>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Election foldout sections
-                const electionsSection = document.getElementById('elections-section');
-                const pledgeSourceMap = {
-                    'internal:2024_president_lai': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '賴清德'),
-                    'internal:2024_president_hou': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '侯友宜'),
-                    'internal:2024_president_ko': candidatesData['2024']['總統大選']['候選人'].find(c => c['姓名'] === '柯文哲'),
-                };
-
-                electionsSection.innerHTML = person.elections.map((e, i) => {
-                    const hasDetail = !!e.pageUrl;
+                timeline.innerHTML = person.elections.map((e, i) => {
+                    const metrics = electionMetrics[i];
+                    const rate = metrics.pledgeCount > 0 ? Math.round((metrics.completedCount / metrics.pledgeCount) * 100) : 0;
+                    const rateColor = rate >= 70 ? 'text-green-600' : rate >= 40 ? 'text-yellow-600' : rate > 0 ? 'text-red-500' : 'text-gray-400';
+                    
                     return `
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                            <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors" onclick="toggleCollapse(this)">
-                                <div>
-                                    <span class="font-bold text-gray-900">${e.year} ${e.type}</span>
-                                    <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
+                        <div class="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-10 rounded-full bg-blue-500 mt-1.5 flex items-center justify-center">
+                                    <span class="text-white text-sm font-bold">${e.year}</span>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    ${e.pledgeCount > 0 ? `<span class="text-sm text-gray-500">${e.completedCount}/${e.pledgeCount} 已達成</span>` : ''}
-                                    <svg class="w-5 h-5 text-gray-400 collapse-arrow transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                ${i < person.elections.length - 1 ? '<div class="w-0.5 h-16 bg-gray-200"></div>' : ''}
+                            </div>
+                            <div class="flex-1 pb-6">
+                                <div class="flex items-center gap-2 flex-wrap mb-2">
+                                    <span class="font-bold text-gray-900 text-lg">${e.type}</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
                                 </div>
-                            </button>
-                            <div class="collapse-content">
-                                <div class="px-6 py-4 border-t border-gray-100">
-                                    ${hasDetail ? `<p class="text-sm text-gray-500 mb-3">此候選人頁面有待實作政見詳細資料。</p>` : `<p class="text-sm text-gray-500 mb-3">尚無詳細政見資料。</p>`}
-                                    ${e.pageUrl ? `<a href="${e.pageUrl}" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">📄 查看候選人頁面 →</a>` : ''}
+                                <p class="text-sm text-gray-600 mb-2">
+                                    ${e.role}${e.runningMate ? ' · 搭檔 ' + e.runningMate : ''}
+                                </p>
+                                ${metrics.pledgeCount > 0 ? `
+                                <div class="flex items-center gap-4 mt-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-24 bg-gray-200 rounded-full h-2">
+                                            <div class="h-2 rounded-full ${rate >= 70 ? 'bg-green-500' : rate >= 40 ? 'bg-yellow-500' : 'bg-red-500'}" style="width: ${rate}%"></div>
+                                        </div>
+                                        <span class="${rateColor} text-sm font-medium">${rate}%</span>
+                                    </div>
+                                    <span class="text-xs text-gray-500">${metrics.completedCount}/${metrics.pledgeCount} 政見達成</span>
                                 </div>
+                                ` : '<span class="text-xs text-gray-400">尚無政見資料</span>'}
                             </div>
                         </div>
                     `;
                 }).join('');
 
+                // Trend chart
+                renderTrendChart(electionMetrics, partyColor);
+
+                // Pledges list (for pledges tab)
+                renderPledgesList(person, candidatesData);
+
+                // Election detail sections
+                renderElectionDetails(person, candidatesData);
+
                 // Related links
                 const linksContainer = document.getElementById('links-container');
                 const hasLinks = person.elections.some(e => e.pageUrl);
                 if (hasLinks) {
-                    document.getElementById('related-links').classList.remove('hidden');
                     linksContainer.innerHTML = person.elections
                         .filter(e => e.pageUrl)
                         .map(e => `
@@ -347,6 +460,251 @@
                 document.getElementById('loading').innerHTML =
                     '<p class="text-red-500 text-center py-8">載入資料失敗，請稍後再試。</p>';
             }
+        }
+
+        function renderTrendChart(electionMetrics, partyColor) {
+            const validMetrics = electionMetrics.filter(m => m.pledgeCount > 0);
+            
+            if (validMetrics.length < 2) {
+                document.getElementById('panel-trends').innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <p>需要至少 2 屆有政見資料的選舉才能顯示趨勢圖</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const labels = validMetrics.map(m => `${m.year}\n${m.type}`);
+            const rates = validMetrics.map(m => Math.round((m.completedCount / m.pledgeCount) * 100));
+            const colors = validMetrics.map(m => m.result === '當選' ? 'rgba(34, 197, 94, 0.8)' : 'rgba(239, 68, 68, 0.8)');
+
+            const ctx = document.getElementById('trendLineChart').getContext('2d');
+            if (trendLineChartInstance) trendLineChartInstance.destroy();
+            
+            trendLineChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: '達成率 (%)',
+                        data: rates,
+                        borderColor: partyColor,
+                        backgroundColor: partyColor.replace(')', ', 0.1)").replace('rgb', 'rgba'),
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 6,
+                        pointBackgroundColor: colors,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `達成率: ${ctx.raw}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { stepSize: 25 } }
+                    }
+                }
+            });
+
+            // Trend summary
+            const summary = document.getElementById('trend-summary');
+            const first = rates[0];
+            const last = rates[rates.length - 1];
+            const change = last - first;
+            const trendIcon = change > 0 ? '📈' : change < 0 ? '📉' : '➡️';
+            const trendColor = change > 0 ? 'text-green-600' : change < 0 ? 'text-red-500' : 'text-gray-600';
+
+            summary.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-gray-700">${first}%</div>
+                    <div class="text-xs text-gray-500">首次參選</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold ${trendColor}">${trendIcon} ${change > 0 ? '+' : ''}${change}%</div>
+                    <div class="text-xs text-gray-500">趨勢變化</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-gray-700">${last}%</div>
+                    <div class="text-xs text-gray-500">最近一次</div>
+                </div>
+            `;
+        }
+
+        function renderPledgesList(person, candidatesData) {
+            const container = document.getElementById('pledges-list');
+            
+            // Get candidate data for pledgeSource elections
+            const nameMap = { 'lai': '賴清德', 'hou': '侯友宜', 'ko': '柯文哲' };
+            let allPledges = [];
+
+            const electionWithSource = person.elections.find(e => e.pledgeSource);
+            if (electionWithSource) {
+                const sourceParts = electionWithSource.pledgeSource.split(':');
+                if (sourceParts.length === 2) {
+                    const [year, key] = sourceParts;
+                    const nameInSource = key.replace('2024_president_', '');
+                    const candidateName = nameMap[nameInSource];
+
+                    if (candidateName && candidatesData[year]) {
+                        const electionKey = Object.keys(candidatesData[year]).find(k => k.includes('總統'));
+                        if (electionKey) {
+                            const candidateData = candidatesData[year][electionKey]['候選人'].find(c => c['姓名'] === candidateName);
+                            if (candidateData) {
+                                allPledges = candidateData['政見'];
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (allPledges.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">尚無政見資料</p>';
+                return;
+            }
+
+            // Group by category
+            const categories = [...new Set(allPledges.map(p => p['分類']))];
+            
+            container.innerHTML = categories.map(cat => {
+                const catPledges = allPledges.filter(p => p['分類'] === cat);
+                const completed = catPledges.filter(p => p['KPI狀態'] === '已完成').length;
+                const inProgress = catPledges.filter(p => p['KPI狀態'] === '進行中').length;
+
+                return `
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-3 flex items-center justify-between">
+                            <h4 class="font-bold text-gray-900">${cat}</h4>
+                            <span class="text-sm text-gray-500">${completed}/${catPledges.length} 完成</span>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            ${catPledges.map(p => {
+                                const status = statusColors[p['KPI狀態']] || statusColors['待追蹤'];
+                                return `
+                                    <div class="flex items-start gap-3">
+                                        <span class="${status.bg} w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm">${status.icon}</span>
+                                        <div class="flex-1">
+                                            <p class="font-medium text-gray-800">${p['標題']}</p>
+                                            <p class="text-xs text-gray-500 mt-1">${p['說明']}</p>
+                                            ${p['專家觀點'] ? `<p class="text-xs text-gray-400 mt-2 italic">💬 ${p['專家觀點']}</p>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderElectionDetails(person, candidatesData) {
+            const container = document.getElementById('elections-section');
+            const nameMap = { 'lai': '賴清德', 'hou': '侯友宜', 'ko': '柯文哲' };
+
+            container.innerHTML = person.elections.map((e, i) => {
+                const metrics = person.elections[i];
+                let pledgeCount = e.pledgeCount || 0;
+                let completedCount = e.completedCount || 0;
+                let pledges = [];
+
+                // Try to get from candidates.json
+                if (e.pledgeSource) {
+                    const sourceParts = e.pledgeSource.split(':');
+                    if (sourceParts.length === 2) {
+                        const [year, key] = sourceParts;
+                        const nameInSource = key.replace('2024_president_', '');
+                        const candidateName = nameMap[nameInSource];
+
+                        if (candidateName && candidatesData[year]) {
+                            const electionKey = Object.keys(candidatesData[year]).find(k => k.includes('總統'));
+                            if (electionKey) {
+                                const candidateData = candidatesData[year][electionKey]['候選人'].find(c => c['姓名'] === person.name);
+                                if (candidateData) {
+                                    pledgeCount = candidateData['政見'].length;
+                                    completedCount = candidateData['政見'].filter(p => p['KPI狀態'] === '已完成').length;
+                                    pledges = candidateData['政見'];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                const hasDetail = pledges.length > 0;
+                const rate = pledgeCount > 0 ? Math.round((completedCount / pledgeCount) * 100) : 0;
+
+                return `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors" onclick="toggleCollapse(this)">
+                            <div class="flex items-center gap-4">
+                                <div class="text-lg font-bold text-gray-900">${e.year} ${e.type}</div>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getResultClass(e.result)}">${e.result}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                ${pledgeCount > 0 ? `
+                                <div class="text-right">
+                                    <span class="text-sm font-medium text-gray-700">${completedCount}/${pledgeCount}</span>
+                                    <span class="text-xs text-gray-400 ml-1">達成</span>
+                                </div>
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="h-2 rounded-full ${rate >= 70 ? 'bg-green-500' : rate >= 40 ? 'bg-yellow-500' : 'bg-red-500'}" style="width: ${rate}%"></div>
+                                </div>
+                                ` : ''}
+                                <svg class="w-5 h-5 text-gray-400 collapse-arrow transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </button>
+                        <div class="collapse-content">
+                            <div class="px-6 py-4 border-t border-gray-100">
+                                ${hasDetail ? `
+                                    <div class="space-y-3">
+                                        ${pledges.map(p => {
+                                            const status = statusColors[p['KPI狀態']] || statusColors['待追蹤'];
+                                            return `
+                                                <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                                    <span class="${status.bg} w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm">${status.icon}</span>
+                                                    <div class="flex-1">
+                                                        <div class="flex items-center gap-2">
+                                                            <p class="font-medium text-gray-800">${p['標題']}</p>
+                                                            <span class="text-xs px-2 py-0.5 rounded bg-gray-200 text-gray-600">${p['分類']}</span>
+                                                        </div>
+                                                        <p class="text-sm text-gray-600 mt-1">${p['說明']}</p>
+                                                        ${p['佐證'] && p['佐證'].length > 0 ? `
+                                                            <div class="mt-2 flex flex-wrap gap-2">
+                                                                ${p['佐證'].map(a => `
+                                                                    <span class="inline-flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded">
+                                                                        ${a['類型'] === '新聞' ? '📰' : a['類型'] === '官方' ? '📋' : a['類型'] === '事實查核' ? '🔍' : '📎'}
+                                                                        ${a['標題'].substring(0, 15)}...
+                                                                    </span>
+                                                                `).join('')}
+                                                            </div>
+                                                        ` : ''}
+                                                        ${p['專家觀點'] ? `<p class="text-sm text-gray-500 mt-2 italic">💬 ${p['專家觀點']}</p>` : ''}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                ` : `<p class="text-sm text-gray-500 mb-3">尚無詳細政見資料。</p>`}
+                                ${e.pageUrl ? `
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <a href="${e.pageUrl}" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
+                                            📄 查看完整候選人頁面 →
+                                        </a>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         loadPerson();
