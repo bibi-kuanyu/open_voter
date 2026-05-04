@@ -355,9 +355,9 @@
                     if (election.pledgeSource) {
                         const sourceParts = election.pledgeSource.split(':');
                         if (sourceParts.length === 2) {
-                            const [year, key] = sourceParts;
-                            // Try to extract candidate name
-                            const nameInSource = key.replace('2024_president_', '');
+                            // sourceParts[0] = 'internal', sourceParts[1] = '2024_president_lai'
+                            const year = sourceParts[1].split('_')[0];
+                            const nameInSource = sourceParts[1].replace('2024_president_', '');
                             const nameMap = { 'lai': '賴清德', 'hou': '侯友宜', 'ko': '柯文哲' };
                             const candidateName = nameMap[nameInSource];
 
@@ -551,8 +551,9 @@
             if (electionWithSource) {
                 const sourceParts = electionWithSource.pledgeSource.split(':');
                 if (sourceParts.length === 2) {
-                    const [year, key] = sourceParts;
-                    const nameInSource = key.replace('2024_president_', '');
+                    // sourceParts[0] = 'internal', sourceParts[1] = '2024_president_lai'
+                    const year = sourceParts[1].split('_')[0];
+                    const nameInSource = sourceParts[1].replace('2024_president_', '');
                     const candidateName = nameMap[nameInSource];
 
                     if (candidateName && candidatesData[year]) {
@@ -620,8 +621,9 @@
                 if (e.pledgeSource) {
                     const sourceParts = e.pledgeSource.split(':');
                     if (sourceParts.length === 2) {
-                        const [year, key] = sourceParts;
-                        const nameInSource = key.replace('2024_president_', '');
+                        // sourceParts[0] = 'internal', sourceParts[1] = '2024_president_lai'
+                        const year = sourceParts[1].split('_')[0];
+                        const nameInSource = sourceParts[1].replace('2024_president_', '');
                         const candidateName = nameMap[nameInSource];
 
                         if (candidateName && candidatesData[year]) {
