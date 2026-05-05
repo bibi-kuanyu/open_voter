@@ -3,205 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政治人物履歷檔案 - Open Voter</title>
-    <meta name="description" content="追蹤台灣政治人物的歷屆選舉政見與履約情形，協助選民判斷候選人政見可信度。">
+    <title>人物總覽 - Open Voter</title>
+    <meta name="description" content="瀏覽所有政治人物履歷檔案。">
     <meta name="robots" content="index, follow">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f9fafb; }
-        .hero-gradient { background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%); }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(26, 86, 219, 0.15); }
-        .party-dpp { background: linear-gradient(135deg, #28a745 0%, #34c759 100%); }
-        .party-kmt { background: linear-gradient(135deg, #007afd 0%, #005bb5 100%); }
-        .party-tp { background: linear-gradient(135deg, #8ab4f8 0%, #4285f4 100%); }
-        .party-pfp { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-        .party-np { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: #f9fafb; color: #1f2937; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .page-header { text-align: center; margin-bottom: 2rem; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .page-subtitle { color: #6b7280; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1rem; }
+        .person-list { display: grid; gap: 1rem; }
+        .person-item { display: flex; gap: 1.25rem; align-items: center; padding: 1rem; background: white; border-radius: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s, box-shadow 0.2s; }
+        .person-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .avatar span { color: white; font-size: 1.5rem; font-weight: bold; }
+        .avatar.dpp { background: linear-gradient(135deg, #28a745, #34c759); }
+        .avatar.kmt { background: linear-gradient(135deg, #007afd, #005bb5); }
+        .avatar.tp { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .person-info { flex: 1; }
+        .person-name { font-size: 1.1rem; font-weight: 600; }
+        .person-party { font-size: 0.85rem; color: #6b7280; }
+        .person-meta { font-size: 0.8rem; color: #9ca3af; margin-top: 0.25rem; }
+        .person-link { color: #2563eb; font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
+        .section-label { font-size: 0.8rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 0.75rem 0; padding-left: 0.5rem; }
+        .footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; }
     </style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="/open_voter/" class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
-                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
-                    </div>
-                </a>
-            </div>
-            <nav class="hidden md:flex items-center gap-6">
-                <a href="/open_voter/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
-                <a href="/open_voter/pages/2024.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2024 選舉</a>
-                <a href="/open_voter/pages/2026.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">2026 選舉</a>
-                <a href="/open_voter/pages/persons.html" class="text-sm text-blue-600 font-medium hover:text-blue-700 transition-colors">人物檔案</a>
-            </nav>
-        </div>
-    </header>
+<body>
+    <div class="container">
+        <a href="/open_voter/" class="back-link">← 返回首頁</a>
 
-    <!-- Breadcrumb -->
-    <div class="bg-gray-50 border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-3">
-            <nav class="flex items-center gap-2 text-sm">
-                <a href="/open_voter/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <span class="text-gray-900 font-medium">政治人物履歷檔案</span>
-            </nav>
+        <div class="page-header">
+            <h1 class="page-title">👤 人物總覽</h1>
+            <p class="page-subtitle">所有政治人物履歷檔案</p>
+        </div>
+
+        <div class="person-list">
+            <div class="section-label">2024 總統候選人</div>
+
+            <a href="/open_voter/pages/persons/lai_ching-te.html" class="person-item">
+                <div class="avatar dpp"><span>賴</span></div>
+                <div class="person-info">
+                    <div class="person-name">賴清德</div>
+                    <div class="person-party">民主進步黨</div>
+                    <div class="person-meta">2屆選舉｜20項政見｜45%達成率</div>
+                </div>
+                <span class="person-link">查看履歷 →</span>
+            </a>
+
+            <a href="/open_voter/pages/persons/hou_you-yi.html" class="person-item">
+                <div class="avatar kmt"><span>侯</span></div>
+                <div class="person-info">
+                    <div class="person-name">侯友宜</div>
+                    <div class="person-party">中國國民黨</div>
+                    <div class="person-meta">2屆選舉｜25項政見｜36%達成率</div>
+                </div>
+                <span class="person-link">查看履歷 →</span>
+            </a>
+
+            <a href="/open_voter/pages/persons/ko_wen-je.html" class="person-item">
+                <div class="avatar tp"><span>柯</span></div>
+                <div class="person-info">
+                    <div class="person-name">柯文哲</div>
+                    <div class="person-party">台灣民眾黨</div>
+                    <div class="person-meta">2屆選舉｜22項政見｜32%達成率</div>
+                </div>
+                <span class="person-link">查看履歷 →</span>
+            </a>
+
+            <div class="section-label">2026 縣市長候選人</div>
+
+            <a href="/open_voter/pages/persons/jiang_qi-chen.html" class="person-item">
+                <div class="avatar kmt"><span>江</span></div>
+                <div class="person-info">
+                    <div class="person-name">江啟臣</div>
+                    <div class="person-party">中國國民黨｜台中市長候選人</div>
+                    <div class="person-meta">2屆選舉｜8項政見｜50%達成率</div>
+                </div>
+                <span class="person-link">查看履歷 →</span>
+            </a>
+
+            <a href="/open_voter/pages/persons/he_xin-chun.html" class="person-item">
+                <div class="avatar dpp"><span>何</span></div>
+                <div class="person-info">
+                    <div class="person-name">何欣純</div>
+                    <div class="person-party">民主進步黨｜台中市長候選人</div>
+                    <div class="person-meta">1屆選舉｜待選舉</div>
+                </div>
+                <span class="person-link">查看履歷 →</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>資料來源：Open Voter 台灣選舉政見履約追蹤</p>
         </div>
     </div>
-
-    <!-- Main Content -->
-    <main class="flex-1 py-12 md:py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">📋 政治人物履歷檔案</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">跨越不同年份與選舉，完整呈現政治人物的歷屆政見與履約情形，幫助選民判斷候選人政見的可信度。</p>
-            </div>
-
-            <!-- Loading State -->
-            <div id="loading" class="text-center py-12">
-                <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
-                <p class="mt-4 text-gray-500">載入人物資料中...</p>
-            </div>
-
-            <!-- Persons Grid -->
-            <div id="persons-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
-
-            <!-- Empty State -->
-            <div id="empty-state" class="text-center py-12 hidden">
-                <p class="text-gray-500 text-lg">尚無人物檔案資料</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-white">Open Voter</span>
-                </div>
-                <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        const partyClassMap = {
-            '民主進步黨': 'party-dpp',
-            '中國國民黨': 'party-kmt',
-            '台灣民眾黨': 'party-tp',
-            '台灣民眾黨': 'party-tp',
-            '親民黨': 'party-pfp',
-            '時代力量': 'party-np'
-        };
-
-        const partyColorMap = {
-            '民主進步黨': '#28a745',
-            '中國國民黨': '#007afd',
-            '台灣民眾黨': '#4285f4',
-            '親民黨': '#f97316',
-            '時代力量': '#6b7280'
-        };
-
-        function getPartyClass(party) {
-            return partyClassMap[party] || 'bg-gray-500';
-        }
-
-        function getInitials(name) {
-            return name.charAt(0);
-        }
-
-        async function loadPersons() {
-            try {
-                const [personsRes, candidatesRes] = await Promise.all([
-                    fetch('/open_voter/data/persons.json'),
-                    fetch('/open_voter/data/candidates.json')
-                ]);
-                const personsData = await personsRes.json();
-                const candidatesData = await candidatesRes.json();
-
-                const persons = Object.entries(personsData.persons);
-                const grid = document.getElementById('persons-grid');
-                const loading = document.getElementById('loading');
-                const emptyState = document.getElementById('empty-state');
-
-                if (persons.length === 0) {
-                    loading.classList.add('hidden');
-                    emptyState.classList.remove('hidden');
-                    return;
-                }
-
-                loading.classList.add('hidden');
-                grid.classList.remove('hidden');
-
-                grid.innerHTML = persons.map(([id, person]) => {
-                    const partyClass = getPartyClass(person.party);
-                    const totalElections = person.elections.length;
-                    const totalPledges = person.elections.reduce((sum, e) => sum + (e.pledgeCount || 0), 0);
-                    const totalCompleted = person.elections.reduce((sum, e) => sum + (e.completedCount || 0), 0);
-                    const overallRate = totalPledges > 0 ? Math.round((totalCompleted / totalPledges) * 100) : 0;
-
-                    const electionTags = person.elections.map(e =>
-                        `<span class="inline-flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded">
-                            ${e.year} ${e.type} · ${e.result}
-                        </span>`
-                    ).join('');
-
-                    return `
-                        <a href="/open_voter/pages/person.html?id=${id}" class="card-hover block bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                            <div class="p-6">
-                                <div class="flex items-center gap-4 mb-4">
-                                    <div class="w-16 h-16 rounded-full ${partyClass} flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white text-2xl font-bold">${getInitials(person.name)}</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-900">${person.name}</h3>
-                                        <p class="text-sm text-gray-500">${person.party}</p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap gap-1 mb-4">${electionTags}</div>
-                                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                                    <div class="text-sm text-gray-500">
-                                        <span class="font-medium text-gray-700">${totalElections}</span> 屆選舉 ·
-                                        <span class="font-medium text-gray-700">${totalPledges}</span> 項政見
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="text-lg font-bold ${overallRate >= 50 ? 'text-green-600' : overallRate > 0 ? 'text-yellow-600' : 'text-red-500'}">${overallRate}%</span>
-                                        <span class="text-xs text-gray-400"> 達成</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Error loading persons:', error);
-                document.getElementById('loading').innerHTML =
-                    '<p class="text-red-500 text-center py-8">載入資料失敗，請稍後再試。</p>';
-            }
-        }
-
-        loadPersons();
-    </script>
 </body>
 </html>
