@@ -3,292 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Voter - 台灣選舉政見履約追蹤平台 | 2024總統立委候選人政見查詢</title>
+    <title>Open Voter - 台灣選舉政見履約追蹤平台</title>
     <meta name="description" content="Open Voter 提供台灣選舉政見履約追蹤，涵蓋2024總統、立委候選人政見與實際執行進度對照，協助選民了解候選人承諾的兌現情形。">
-    <meta name="keywords" content="台灣選舉, 政見履約, 2024總統候選人, 立法委員, 民進黨, 國民黨, 民眾黨, 候選人政見, 選舉履約追蹤, 選賢與能">
-    <meta name="author" content="Open Voter">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://bibi-kuanyu.github.io/open_voter/">
-    <meta property="og:locale" content="zh_TW">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Open Voter - 台灣選舉政見履約追蹤平台">
-    <meta property="og:description" content="追蹤候選人政見的履約情形，用數據看見政治的承諾是否兌現。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bibi-kuanyu.github.io/open_voter/">
-    <meta property="og:image" content="https://bibi-kuanyu.github.io/open_voter/og-image.png">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Open Voter - 台灣選舉政見履約追蹤平台">
-    <meta name="twitter:description" content="追蹤候選人政見的履約情形，用數據看見政治的承諾是否兌現。">
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Open Voter",
-  "alternateName": "台灣選舉政見履約追蹤平台",
-  "url": "https://bibi-kuanyu.github.io/open_voter/",
-  "description": "專注於台灣選舉政見履約追蹤與查詢的平台，協助選民了解候選人政見的兌現情形。",
-  "keywords": "台灣選舉, 政見履約, 2024總統候選人, 立法委員, 候選人政見"
-}
-</script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f9fafb;
-        }
-        .hero-gradient {
-            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%);
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(26, 86, 219, 0.15);
-        }
-        .year-badge {
-            background: linear-gradient(135deg, #1a56db, #3b82f6);
-        }
-        .card-2024 { border-left-color: #dc2626; }
-        .card-2026 { border-left-color: #16a34a; }
-        .card-2028 { border-left-color: #6b7280; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: #f9fafb; color: #1f2937; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .page-subtitle { color: #6b7280; margin-bottom: 2rem; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1rem; }
+        .year-badge { display: inline-block; font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-right: 1rem; }
+        .year-info { font-size: 0.85rem; color: #6b7280; }
+        .year-card { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-radius: 1rem; margin-bottom: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
+        .year-card:last-child { margin-bottom: 0; }
+        .year-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .year-card-content { display: flex; align-items: center; gap: 1.5rem; }
+        .year-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-center; font-weight: 700; color: white; font-size: 1.1rem; }
+        .icon-2024 { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .icon-2026 { background: linear-gradient(135deg, #16a34a, #15803d); }
+        .icon-2028 { background: linear-gradient(135deg, #6b7280, #4b5563); }
+        .year-name { font-size: 1.25rem; font-weight: 600; }
+        .year-type { font-size: 0.8rem; color: #6b7280; margin-top: 0.2rem; }
+        .year-arrow { color: #9ca3af; font-size: 1.2rem; }
+        .status-tag { font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: 999px; font-weight: 500; margin-left: 0.75rem; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-upcoming { background: #fef3c7; color: #92400e; }
+        .status-planning { background: #f3f4f6; color: #6b7280; }
+        .footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; margin-top: 2rem; }
     </style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
-                    <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
-                </div>
-            </div>
-            <nav class="hidden md:flex items-center gap-6">
-                <a href="#" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
-                <a href="#years" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">年份選擇</a>
-                <a href="/open_voter/pages/persons.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">人物檔案</a>
-                <a href="#about" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">關於我們</a>
-            </nav>
-        </div>
-    </header>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="page-title">Open Voter</h1>
+            <p class="page-subtitle">台灣選舉政見履約追蹤平台</p>
 
-    <!-- Hero Section -->
-    <section class="hero-gradient text-white py-20 md:py-28">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-                讓候選人的承諾<br class="md:hidden">不再只是口號
-            </h2>
-            <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                追蹤當選人的政見兌現情形，<br class="md:hidden">用數據看見政治的真相
-            </p>
-            <a href="#years" class="inline-flex items-center gap-2 bg-white text-blue-600 font-medium px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors shadow-lg">
-                <span>開始查詢</span>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
+            <!-- 2024 -->
+            <a href="/open_voter/pages/2024.html" class="year-card" style="background: white; text-decoration: none; color: inherit; border: 1px solid #e5e7eb;">
+                <div class="year-card-content">
+                    <div class="year-icon icon-2024">24</div>
+                    <div>
+                        <div class="year-name">2024 選舉<span class="status-tag status-completed">已完成</span></div>
+                        <div class="year-type">總統、副總統及立法委員選舉</div>
+                    </div>
+                </div>
+                <div class="year-arrow">→</div>
             </a>
-        </div>
-    </section>
 
-    <!-- Stats Section -->
-    <section class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div>
-                    <div class="text-2xl md:text-3xl font-bold text-blue-600">2024</div>
-                    <div class="text-sm text-gray-500">總統暨立委</div>
+            <!-- 2026 -->
+            <a href="/open_voter/pages/index.html" class="year-card" style="background: white; text-decoration: none; color: inherit; border: 1px solid #e5e7eb;">
+                <div class="year-card-content">
+                    <div class="year-icon icon-2026">26</div>
+                    <div>
+                        <div class="year-name">2026 選舉<span class="status-tag status-upcoming">即將到來</span></div>
+                        <div class="year-type">縣市首長及地方議會選舉</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-2xl md:text-3xl font-bold text-blue-600">2026</div>
-                    <div class="text-sm text-gray-500">地方選舉</div>
+                <div class="year-arrow">→</div>
+            </a>
+
+            <!-- 2028 -->
+            <div class="year-card" style="background: #f9fafb; border: 1px solid #e5e7eb; cursor: default;">
+                <div class="year-card-content">
+                    <div class="year-icon icon-2028">28</div>
+                    <div>
+                        <div class="year-name" style="color: #9ca3af;">2028 選舉<span class="status-tag status-planning">規劃中</span></div>
+                        <div class="year-type" style="color: #d1d5db;">下一屆總統大選</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-2xl md:text-3xl font-bold text-gray-400">2028</div>
-                    <div class="text-sm text-gray-400">未來選舉</div>
-                </div>
-                <div>
-                    <div class="text-2xl md:text-3xl font-bold text-green-600">100%</div>
-                    <div class="text-sm text-gray-500">公開透明</div>
-                </div>
+                <div class="year-arrow" style="color: #d1d5db;">—</div>
             </div>
         </div>
-    </section>
 
-    <!-- Year Selection Cards -->
-    <section id="years" class="py-16 md:py-20">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">選擇選舉年份</h3>
-                <p class="text-gray-500 max-w-md mx-auto">點擊下方卡片以查看該年選舉的候選人政見履約情形</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <!-- 2024 Card -->
-                <a href="/open_voter/pages/2024.html" class="card-hover bg-white rounded-xl shadow-md border-l-4 border-red-600 p-6 block group">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <span class="year-badge text-white text-sm font-medium px-3 py-1 rounded-full">2024</span>
-                            <span class="text-xs bg-red-100 text-red-700 font-medium px-2 py-1 rounded-full flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                                </svg>
-                                熱門
-                            </span>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-900">總統暨立委</h4>
-                            <p class="text-xs text-red-600 font-medium">總統大選</p>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-4">第十四任總統副總統及第十一屆立法委員選舉</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">總統</span>
-                        <span class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">區域立委</span>
-                        <span class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">不分區</span>
-                    </div>
-                </a>
-
-                <!-- 2026 Card -->
-                <a href="/open_voter/pages/index.html" class="card-hover bg-white rounded-xl shadow-md border-l-4 border-green-500 p-6 block group opacity-90">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-green-100 text-green-700 text-sm font-medium px-3 py-1 rounded-full">2026</span>
-                            <span class="text-xs bg-green-100 text-green-700 font-medium px-2 py-1 rounded-full flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                                </svg>
-                                即將到來
-                            </span>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-900">地方選舉</h4>
-                            <p class="text-xs text-green-600 font-medium">地方公職</p>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-4">地方自治層級選舉，包含縣市首長及地方議會</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">縣市長</span>
-                        <span class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">縣市議會</span>
-                        <span class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">鄉鎮市</span>
-                    </div>
-                </a>
-
-                <!-- 2028 Card -->
-                <a href="#" class="card-hover bg-white rounded-xl shadow-md border-l-4 border-gray-400 p-6 block group opacity-60">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-gray-200 text-gray-500 text-sm font-medium px-3 py-1 rounded-full">2028</span>
-                            <span class="text-xs bg-gray-100 text-gray-500 font-medium px-2 py-1 rounded-full flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
-                                敬請期待
-                            </span>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-900">未來選舉</h4>
-                            <p class="text-xs text-gray-500 font-medium">下一屆大選</p>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-400 mb-4">敬請期待未來的選舉資料上線</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-xs bg-gray-50 text-gray-400 px-2 py-1 rounded">籌備中</span>
-                    </div>
-                </a>
-            </div>
+        <div class="footer">
+            <p>資料來源：Open Voter 台灣選舉政見履約追蹤</p>
         </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="bg-gray-50 border-t border-gray-200 py-16 md:py-20">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        關於我們
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Open Voter 致力於促進台灣選舉資訊的透明化。我們相信選民有權利了解候選人的過往表現，而候選人應當為自己的承諾負責。透過整理公開的政見資料與履約情形，讓公民能夠做出更明智的選擇。
-                    </p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        資料來源
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        本網站資料來源包含中央選舉委員會、各縣市政府教育局、監察院公職人員財產申報，以及相關政府公開資料。我們盡力確保資料的準確性，但並不保證資料的完整性與即時性。
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-white">Open Voter</span>
-                </div>
-                <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    </div>
 </body>
 </html>

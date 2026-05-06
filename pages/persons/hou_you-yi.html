@@ -23,27 +23,55 @@
         .info h1 { font-size: 1.8rem; font-weight: 700; }
         .party-tag { display: inline-block; background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 500; margin-top: 0.5rem; }
         .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
-        .stat { background: white; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.25rem; text-align: center; }
-        .stat-value { font-size: 2rem; font-weight: 700; }
-        .stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
-        .election { border-left: 4px solid #e5e7eb; padding-left: 1.25rem; margin-bottom: 1.5rem; position: relative; }
-        .election::before { content: ''; position: absolute; left: -10px; top: 0.25rem; width: 16px; height: 16px; border-radius: 50%; background: #2563eb; border: 3px solid white; box-shadow: 0 0 0 2px #2563eb; }
-        .election.won::before { background: #22c55e; box-shadow: 0 0 0 2px #22c55e; }
-        .election.lost::before { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
-        .election-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .election-year { font-size: 1.1rem; font-weight: 600; }
-        .election-result { font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 500; }
+        .stat { background: #f9fafb; border-radius: 0.75rem; padding: 1rem; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; }
+        .stat-label { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e5e7eb; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Election Card */
+        .election-card { background: #f9fafb; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 4px solid #e5e7eb; }
+        .election-card:last-child { margin-bottom: 0; }
+        .election-card.won { border-left-color: #22c55e; }
+        .election-card.lost { border-left-color: #ef4444; }
+        .election-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .election-year { font-size: 1.2rem; font-weight: 700; color: #1f2937; }
+        .election-result { font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 500; }
         .result-won { background: #dcfce7; color: #166534; }
         .result-lost { background: #fee2e2; color: #991b1b; }
-        .election-detail { color: #6b7280; font-size: 0.9rem; }
-        .election-pledges { font-size: 0.85rem; color: #374151; margin-top: 0.5rem; }
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
+        .result-ongoing { background: #fef3c7; color: #92400e; }
+        .election-detail { font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem; }
+        .election-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; font-size: 0.85rem; }
+        .election-stat { display: flex; align-items: center; gap: 0.35rem; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-completed { background: #22c55e; }
+        .dot-progress { background: #f59e0b; }
+        .dot-pending { background: #6b7280; }
+
+        /* Pledge List */
+        .pledge-list { margin-top: 1rem; }
+        .pledge-item { background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem; border: 1px solid #e5e7eb; }
+        .pledge-item:last-child { margin-bottom: 0; }
+        .pledge-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .pledge-title { font-weight: 600; font-size: 0.95rem; }
+        .pledge-status { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 500; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-progress { background: #fef3c7; color: #92400e; }
+        .status-pending { background: #f3f4f6; color: #6b7280; }
+        .status-failed { background: #fee2e2; color: #991b1b; }
+        .pledge-desc { font-size: 0.85rem; color: #6b7280; margin-bottom: 0.5rem; }
+        .pledge-category { font-size: 0.7rem; color: #2563eb; background: #dbeafe; padding: 0.15rem 0.5rem; border-radius: 999px; display: inline-block; margin-top: 0.25rem; }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin-top: 0.75rem; }
+        .progress-fill { height: 100%; border-radius: 3px; }
+        .progress-fill.high { background: #22c55e; }
+        .progress-fill.medium { background: #f59e0b; }
+        .progress-fill.low { background: #ef4444; }
+
         .footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="/open_voter/pages/persons.html" class="back-link">← 返回人物總覽</a>
+        <a href="/open_voter/pages/2024.html" class="back-link">← 返回 2024 選舉</a>
 
         <div class="card">
             <div class="header">
@@ -74,25 +102,299 @@
             </div>
         </div>
 
+        <!-- 2024 總統大選 -->
         <div class="card">
-            <h2 class="section-title">📅 選舉時間軸</h2>
+            <h2 class="section-title">📅 2024 總統大選</h2>
 
-            <div class="election lost">
+            <div class="election-card lost">
                 <div class="election-header">
-                    <span class="election-year">2024 總統大選</span>
+                    <div>
+                        <div class="election-year">第十四任總統、副總統選舉</div>
+                        <div class="election-detail">副手：趙少康｜得票率：33.49%</div>
+                    </div>
                     <span class="election-result result-lost">未當選</span>
                 </div>
-                <div class="election-detail">副手：趙少康｜得票率：33.49%</div>
-                <div class="election-pledges">政見數：10｜達成：0｜進行中：5</div>
-                <a href="/open_voter/pages/2024/president_hou.html">📋 查看政見履約追蹤 →</a>
-            </div>
 
-            <div class="election won">
+                <div class="election-stats">
+                    <div class="election-stat"><span class="stat-dot dot-completed"></span> 已完成：0</div>
+                    <div class="election-stat"><span class="stat-dot dot-progress"></span> 進行中：2</div>
+                    <div class="election-stat"><span class="stat-dot dot-pending"></span> 待追蹤：8</div>
+                </div>
+
+                <div class="pledge-list">
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">恢復兩岸和平交流</span>
+                            <span class="pledge-status status-failed">未達成</span>
+                        </div>
+                        <div class="pledge-desc">重啟兩岸對話機制，建立常態化交流平台，降低區域緊張</div>
+                        <span class="pledge-category">兩岸</span>
+                        <div class="progress-bar"><div class="progress-fill low" style="width: 20%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">推動北台灣科技產業廊帶</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">串聯新北、台北、桃園科技產業，打造科技走廊</div>
+                        <span class="pledge-category">產業</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">青年購屋免頭期款</span>
+                            <span class="pledge-status status-failed">未達成</span>
+                        </div>
+                        <div class="pledge-desc">提供青年購屋補貼，降低購屋門檻，協助青年安居</div>
+                        <span class="pledge-category">居住</span>
+                        <div class="progress-bar"><div class="progress-fill low" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">檢討能源政策</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">重新評估核電使用，確保供電穩定，維持合理電價</div>
+                        <span class="pledge-category">能源</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">擴大社會住宅供給</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">加速興建社會住宅，結合都更推動</div>
+                        <span class="pledge-category">居住</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">強化國軍戰力</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">提升國軍裝備現代化，改善軍人待遇，強化後備動員體系</div>
+                        <span class="pledge-category">國防</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">推動產業升級轉型</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">協助傳統產業數位轉型，發展AI應用</div>
+                        <span class="pledge-category">產業</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">改善長期照顧制度</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">擴充長照資源，提升照顧品質，減輕家庭照顧負擔</div>
+                        <span class="pledge-category">醫療</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">推動財政改革</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">優化稅制結構，提高財政效率，降低政府債務</div>
+                        <span class="pledge-category">財政</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">完善教育體制</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">推動教育正常化，強化品德教育，提升技職教育地位</div>
+                        <span class="pledge-category">教育</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2018 新北市長 -->
+        <div class="card">
+            <h2 class="section-title">📅 2018 新北市長選舉</h2>
+
+            <div class="election-card won">
                 <div class="election-header">
-                    <span class="election-year">2018 新北市長</span>
+                    <div>
+                        <div class="election-year">新北市第十一屆市長選舉</div>
+                        <div class="election-detail">第十任新北市市長</div>
+                    </div>
                     <span class="election-result result-won">當選</span>
                 </div>
-                <div class="election-pledges">政見數：15｜已完成：9</div>
+
+                <div class="election-stats">
+                    <div class="election-stat"><span class="stat-dot dot-completed"></span> 已完成：9</div>
+                    <div class="election-stat"><span class="stat-dot dot-progress"></span> 進行中：4</div>
+                    <div class="election-stat"><span class="stat-dot dot-pending"></span> 待追蹤：2</div>
+                </div>
+
+                <div class="pledge-list">
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">捷運環狀線完工通車</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">完成捷運環狀線第一階段工程，縮短南北側交通時間</div>
+                        <span class="pledge-category">交通</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">倍增公托數量</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">公托數從 5 處擴增至 16 處，減輕家長育兒負擔</div>
+                        <span class="pledge-category">社會福利</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">擴大老人共餐</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">從 100 處擴增至 400 處，促進長者社會參與</div>
+                        <span class="pledge-category">社會福利</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">污水下水道接管率提升</span>
+                            <span class="pledge-status status-progress">進行中</span>
+                        </div>
+                        <div class="pledge-desc">接管率從 60% 提升至 80%，改善居家環境衛生</div>
+                        <span class="pledge-category">環境</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 75%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">新建國民運動中心</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">於各區興建國民運動中心，提供優質運動設施</div>
+                        <span class="pledge-category">體育</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">活化淡海新市鎮</span>
+                            <span class="pledge-status status-progress">進行中</span>
+                        </div>
+                        <div class="pledge-desc">加速淡海新市鎮開發，引進產業與人口</div>
+                        <span class="pledge-category">城鄉</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 60%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">推動都市更新</span>
+                            <span class="pledge-status status-progress">進行中</span>
+                        </div>
+                        <div class="pledge-desc">加速推動危老建築重建，改善市容景觀</div>
+                        <span class="pledge-category">城鄉</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 55%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">建置智慧城市</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">推動智慧交通、智慧安防、智慧照護</div>
+                        <span class="pledge-category">數位</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">提升消防設備</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">更新消防車與救災裝備，強化救災效能</div>
+                        <span class="pledge-category">安全</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">改善校園設施</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">更新老舊校舍，改善校园运动设施</div>
+                        <span class="pledge-category">教育</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">擴大職業訓練</span>
+                            <span class="pledge-status status-progress">進行中</span>
+                        </div>
+                        <div class="pledge-desc">提供多元職業訓練，協助待業民眾重返職場</div>
+                        <span class="pledge-category">勞工</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 70%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">友善動物環境</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">興建動物之家，提升流浪動物收容品質</div>
+                        <span class="pledge-category">動物福利</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">農產品產銷調節</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">建立穩定的農產品產銷管道，穩定農民收入</div>
+                        <span class="pledge-category">農業</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">設置銀髮族照護中心</span>
+                            <span class="pledge-status status-completed">已完成</span>
+                        </div>
+                        <div class="pledge-desc">於各區設置銀髮族照護據點，提供多元長照服務</div>
+                        <span class="pledge-category">長照</span>
+                        <div class="progress-bar"><div class="progress-fill high" style="width: 100%;"></div></div>
+                    </div>
+
+                    <div class="pledge-item">
+                        <div class="pledge-header">
+                            <span class="pledge-title">基層建設經費透明化</span>
+                            <span class="pledge-status status-pending">待追蹤</span>
+                        </div>
+                        <div class="pledge-desc">建立基層建設經費公開查詢系統</div>
+                        <span class="pledge-category">治理</span>
+                        <div class="progress-bar"><div class="progress-fill medium" style="width: 0%;"></div></div>
+                    </div>
+                </div>
             </div>
         </div>
 

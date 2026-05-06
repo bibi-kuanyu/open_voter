@@ -5,161 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2024 選舉 - Open Voter - 台灣選舉政見履約追蹤平台</title>
     <meta name="description" content="2024年台灣選舉專題，涵蓋總統候選人及立法委員選舉，提供候選人政見履約追蹤，協助選民了解候選人承諾的兌現情形。">
-    <meta name="keywords" content="2024選舉, 台灣選舉, 2024總統候選人, 2024立法委員, 政見履約, 候選人政見">
-    <meta name="author" content="Open Voter">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="2024 選舉 - Open Voter">
-    <meta property="og:description" content="2024年台灣選舉政見履約追蹤，總統與立委候選人政見查詢">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bibi-kuanyu.github.io/open_voter/pages/2024.html">
-    <meta property="og:image" content="https://bibi-kuanyu.github.io/open_voter/og-image.png">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="2024 選舉 - Open Voter">
-    <meta name="twitter:description" content="2024年台灣選舉政見履約追蹤，總統與立委候選人政見查詢">
-
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f9fafb;
-        }
-        .hero-gradient {
-            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 50%, #60a5fa 100%);
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(26, 86, 219, 0.15);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: #f9fafb; color: #1f2937; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1rem; }
+        .page-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .page-subtitle { color: #6b7280; margin-bottom: 2rem; }
+        .candidate-row { display: flex; align-items: center; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        .candidate-row:last-child { border-bottom: none; }
+        .candidate-info { flex: 0 0 200px; }
+        .candidate-name { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .candidate-party { font-size: 0.8rem; color: #6b7280; }
+        .candidate-chart { flex: 1; }
+        .chart-bar { height: 24px; background: #e5e7eb; border-radius: 12px; overflow: hidden; position: relative; }
+        .chart-fill { height: 100%; border-radius: 12px; transition: width 0.3s; }
+        .chart-fill.high { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .chart-fill.medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .chart-fill.low { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .chart-label { font-size: 0.85rem; color: #374151; margin-top: 0.5rem; }
+        .chart-stats { flex: 0 0 120px; text-align: right; }
+        .stats-value { font-size: 1.5rem; font-weight: 700; color: #2563eb; }
+        .stats-label { font-size: 0.75rem; color: #9ca3af; }
+        .election-type { font-size: 0.75rem; color: #2563eb; background: #dbeafe; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 500; margin-left: 0.5rem; }
+        .footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; }
     </style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="/open_voter/" class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg hero-gradient flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900">Open Voter</h1>
-                        <p class="text-xs text-gray-500">台灣選舉政見履約追蹤</p>
-                    </div>
-                </a>
-            </div>
-            <nav class="hidden md:flex items-center gap-6">
-                <a href="/open_voter/" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">首頁</a>
-                <a href="/open_voter/#years" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">年份選擇</a>
-                <a href="/open_voter/pages/persons.html" class="text-sm text-gray-600 hover:text-blue-600 transition-colors">人物檔案</a>
-            </nav>
-        </div>
-    </header>
+<body>
+    <div class="container">
+        <a href="/open_voter/" class="back-link">← 返回首頁</a>
 
-    <!-- Breadcrumb -->
-    <div class="bg-gray-50 border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-3">
-            <nav class="flex items-center gap-2 text-sm">
-                <a href="/open_voter/" class="text-gray-500 hover:text-blue-600 transition-colors">首頁</a>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <span class="text-gray-900 font-medium">2024 選舉</span>
-            </nav>
+        <div class="card">
+            <h1 class="page-title">2024 選舉</h1>
+            <p class="page-subtitle">第十四任總統、副總統及第十一屆立法委員選舉</p>
+
+            <!-- 賴清德 -->
+            <a href="/open_voter/pages/persons/lai_ching-te.html" class="candidate-row" style="display:flex; text-decoration: none; color: inherit;">
+                <div class="candidate-info">
+                    <div class="candidate-name">賴清德<span class="election-type">當選</span></div>
+                    <div class="candidate-party">民主進步黨｜副手：蕭美琴</div>
+                </div>
+                <div class="candidate-chart">
+                    <div class="chart-bar">
+                        <div class="chart-fill medium" style="width: 58%;"></div>
+                    </div>
+                    <div class="chart-label">歷年平均達成率</div>
+                </div>
+                <div class="chart-stats">
+                    <div class="stats-value">58%</div>
+                    <div class="stats-label">平均達成率</div>
+                </div>
+            </a>
+
+            <!-- 侯友宜 -->
+            <a href="/open_voter/pages/persons/hou_you-yi.html" class="candidate-row" style="display:flex; text-decoration: none; color: inherit;">
+                <div class="candidate-info">
+                    <div class="candidate-name">侯友宜<span class="election-type" style="background:#fee2e2; color:#991b1b;">未當選</span></div>
+                    <div class="candidate-party">中國國民黨｜副手：趙少康</div>
+                </div>
+                <div class="candidate-chart">
+                    <div class="chart-bar">
+                        <div class="chart-fill low" style="width: 36%;"></div>
+                    </div>
+                    <div class="chart-label">歷年平均達成率</div>
+                </div>
+                <div class="chart-stats">
+                    <div class="stats-value">36%</div>
+                    <div class="stats-label">平均達成率</div>
+                </div>
+            </a>
+
+            <!-- 柯文哲 -->
+            <a href="/open_voter/pages/persons/ko_wen-je.html" class="candidate-row" style="display:flex; text-decoration: none; color: inherit;">
+                <div class="candidate-info">
+                    <div class="candidate-name">柯文哲<span class="election-type" style="background:#fee2e2; color:#991b1b;">未當選</span></div>
+                    <div class="candidate-party">台灣民眾黨｜副手：吳欣盈</div>
+                </div>
+                <div class="candidate-chart">
+                    <div class="chart-bar">
+                        <div class="chart-fill low" style="width: 32%;"></div>
+                    </div>
+                    <div class="chart-label">歷年平均達成率</div>
+                </div>
+                <div class="chart-stats">
+                    <div class="stats-value">32%</div>
+                    <div class="stats-label">平均達成率</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 立委區域 -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2 class="page-title" style="font-size: 1.3rem; margin-bottom: 1rem;">立法委員候選人</h2>
+            <a href="/open_voter/pages/2024/legislators_district.html" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f9fafb; border-radius: 0.5rem; text-decoration: none; color: inherit;">
+                <div>
+                    <div style="font-weight: 600; color: #1f2937;">區域立法委員</div>
+                    <div style="font-size: 0.85rem; color: #6b7280;">73個選區候選人</div>
+                </div>
+                <div style="color: #2563eb;">查看 →</div>
+            </a>
+            <a href="/open_voter/pages/2024/legislators_party.html" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f9fafb; border-radius: 0.5rem; text-decoration: none; color: inherit; margin-top: 0.5rem;">
+                <div>
+                    <div style="font-weight: 600; color: #1f2937;">不分區立法委員</div>
+                    <div style="font-size: 0.85rem; color: #6b7280;">不分區政黨名單</div>
+                </div>
+                <div style="color: #2563eb;">查看 →</div>
+            </a>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 py-12 md:py-16">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">2024 台灣總統暨立委選舉</h2>
-                <p class="text-lg text-gray-500">第十四任總統、副總統及第十一屆立法委員選舉</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <!-- 總統候選人卡片 -->
-                <a href="/open_voter/pages/2024/president.html" class="card-hover bg-white rounded-xl shadow-md border-l-4 border-red-500 p-6 block group">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
-                            </svg>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">總統候選人</h3>
-                    <p class="text-sm text-gray-500 mb-4">第十四任總統、副總統選舉候選人資訊及政見</p>
-                    <div class="flex items-center gap-2 text-red-600 font-medium text-sm">
-                        <span>查看候選人</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                </a>
-
-                <!-- 立法委員候選人卡片 -->
-                <a href="/open_voter/pages/2024/legislators_district.html" class="card-hover bg-white rounded-xl shadow-md border-l-4 border-blue-500 p-6 block group">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">立法委員候選人</h3>
-                    <p class="text-sm text-gray-500 mb-4">第十一屆立法委員選舉區域及不分區候選人</p>
-                    <div class="flex items-center gap-2 text-blue-600 font-medium text-sm">
-                        <span>查看候選人</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                </a>
-            </div>
-
-            <div class="text-center mt-12">
-                <a href="/open_voter/" class="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                    <span>返回首頁</span>
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
-                    </div>
-                    <span class="font-medium text-white">Open Voter</span>
-                </div>
-                <p class="text-sm">© 2024 Open Voter. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <div class="footer">
+        <p>資料來源：Open Voter 台灣選舉政見履約追蹤</p>
+    </div>
 </body>
 </html>
